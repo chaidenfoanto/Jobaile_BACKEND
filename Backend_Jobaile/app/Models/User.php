@@ -22,6 +22,8 @@ class User extends Authenticatable
 
     protected $primaryKey = 'id_user';
 
+    
+
     public $incrementing = false; 
  
     protected $keyType = 'string';

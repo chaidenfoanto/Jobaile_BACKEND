@@ -16,8 +16,13 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
+            'fullname' => 'hehecjnfjcfnjf',
             'email' => 'test@example.com',
+            'password' => bcrypt('hellobello'), // password
+            'phone' => '08123456789',
+            'gender' => 'Laki-laki',
+            'birthdate' => '2000-01-01',
+            'ktp_card_path' => 'path/to/ktp_card.jpg', // Simulasi path KTP
         ]);
     }
 }

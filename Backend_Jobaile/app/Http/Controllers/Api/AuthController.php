@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function registerRecruiter(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'fullname' => 'required|string|max:50',
@@ -56,6 +56,67 @@ class AuthController extends Controller
                 'phone' => $request->phone,
                 'gender' => Gender::from($request->gender),
                 'birthdate' => $request->birthdate,
+                'role' => 'Recruiter',
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'user created successfully',
+                'id_user' => $user->id_user,
+                'data' => $user,
+                'ktp_card' => $uploadedImageResponse,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Registration failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function registerWorker(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required|string|max:50',
+            'email' => 'required|string|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'phone' => 'required|string|min:10|max:15',
+            'gender' => ['required', new Enum(Gender::class)],
+            'birthdate' => 'required|date',
+            'ktp_card' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $uploadfolder = 'users';
+
+        try {
+            $ktp_card = $request->file('ktp_card');
+
+            $ktpcard_uploaded_path = $ktp_card->store($uploadfolder, 'public');
+
+            $uploadedImageResponse = array(
+                "image_name" => basename($ktpcard_uploaded_path),
+                "image_url" => Storage::disk('public')->url($ktpcard_uploaded_path),
+                "mime" => $ktp_card->getClientMimeType()
+            );
+
+            $user = User::create([
+                'id_user' => $request->id_user,
+                'fullname' => $request->fullname,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'phone' => $request->phone,
+                'gender' => Gender::from($request->gender),
+                'birthdate' => $request->birthdate,
+                'role' => 'Worker',
             ]);
 
             return response()->json([

@@ -84,7 +84,7 @@ class AuthController extends Controller
             'phone' => 'required|string|min:10|max:15',
             'gender' => ['required', new Enum(Gender::class)],
             'birthdate' => 'required|date',
-            'ktp_card' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ktp_card_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -98,7 +98,7 @@ class AuthController extends Controller
         $uploadfolder = 'users';
 
         try {
-            $ktp_card = $request->file('ktp_card');
+            $ktp_card = $request->file('ktp_card_path');
 
             $ktpcard_uploaded_path = $ktp_card->store($uploadfolder, 'public');
 
@@ -116,6 +116,7 @@ class AuthController extends Controller
                 'phone' => $request->phone,
                 'gender' => Gender::from($request->gender),
                 'birthdate' => $request->birthdate,
+                'ktp_card_path' => $uploadedImageResponse['image_url'],
                 'role' => 'Worker',
             ]);
 

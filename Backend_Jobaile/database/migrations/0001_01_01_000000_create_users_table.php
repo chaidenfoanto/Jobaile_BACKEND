@@ -20,7 +20,7 @@ return new class extends Migration
             $table->enum('gender', ['Laki-laki', 'Perempuan']);
             $table->date('birthdate');
             $table->string('ktp_card_path')->nullable(); // jika ingin simpan path KTP
-            $table->enum('role', ['ART', 'Recruiter'])->nullable();
+            $table->enum('role', ['Worker', 'Recruiter'])->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

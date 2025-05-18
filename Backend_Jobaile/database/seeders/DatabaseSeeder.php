@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'gender' => 'Laki-laki',
             'birthdate' => '2000-01-01',
             'ktp_card_path' => 'path/to/ktp_card.jpg', // Simulasi path KTP
+            'role' => 'Recruiter',
         ]);
     }
 }

@@ -34,7 +34,8 @@ class User extends Authenticatable
         'phone',
         'gender',
         'birthdate',
-        'ktp_card'
+        'ktp_card_path',
+        'role'
     ];
 
     /**

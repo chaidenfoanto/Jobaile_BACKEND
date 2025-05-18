@@ -32,6 +32,7 @@ class UserFactory extends Factory
             'gender' => $this->faker->randomElement(['Laki-laki', 'Perempuan']),
             'birthdate' => $this->faker->date(),
             'ktp_card_path' => 'path/to/ktp_card.jpg',
+            'role' => $this->faker->randomElement(['ART', 'Recruiter']),
         ];
     }
 

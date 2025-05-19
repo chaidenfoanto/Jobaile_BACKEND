@@ -32,10 +32,6 @@ class WorkerModel extends Model
         'profile_picture'
     ];
 
-    protected $casts = [
-        'location' => 'array',
-    ];
-
     protected static function booted()
     {
         parent::boot();
@@ -47,8 +43,20 @@ class WorkerModel extends Model
         });
     }
 
+    // WorkerProfile.php
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
+
+    public function matchings()
+    {
+        return $this->hasMany(Matchmaking::class, 'id_worker', 'id_worker');
+    }
+
+
+    public function contracts()
+    {
+        return $this->hasMany(ContractModel::class, 'id_worker', 'id_worker');
     }
 }

@@ -30,10 +30,6 @@ class RecruiterModel extends Model
         'profile_picture'
     ];
 
-    protected $casts = [
-        'location_address' => 'array',
-    ];
-
     protected static function booted()
     {
         parent::boot();
@@ -47,6 +43,22 @@ class RecruiterModel extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
+
+    public function jobs()
+    {
+        return $this->hasMany(Job_OfferModel::class, 'id_recruiter', 'id_recruiter');
+    }
+
+    public function matchings()
+    {
+        return $this->hasMany(MatchmakingModel::class, 'id_recruiter', 'id_recruiter');
+    }
+
+    public function contracts()
+    {
+        return $this->hasMany(ContractModel::class, 'id_recruiter', 'id_recruiter');
+    }
+
 }

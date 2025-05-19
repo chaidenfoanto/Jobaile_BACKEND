@@ -74,13 +74,48 @@ class User extends Authenticatable
         ];
     }
 
-    public function recruiter()
+    public function workerProfile()
     {
-        return $this->belongsTo(RecruiterModel::class);
+        return $this->hasOne(WorkerProfile::class, 'id_user', 'id_user');
     }
 
-    public function worker()
+    /**
+     * Get the recruiter profile associated with the user.
+     */
+    public function recruiterProfile()
     {
-        return $this->belongsTo(WorkerModel::class);
+        return $this->hasOne(RecruiterProfile::class, 'id_user', 'id_user');
+    }
+
+    /**
+     * Get the ratings/reviews given by the user.
+     */
+    public function givenReviews()
+    {
+        return $this->hasMany(RatingReviewModel::class, 'id_reviewer', 'id_user');
+    }
+
+    /**
+     * Get the ratings/reviews received by the user.
+     */
+    public function receivedReviews()
+    {
+        return $this->hasMany(RatingReviewModel::class, 'id_reviewed', 'id_user');
+    }
+
+    /**
+     * Get the chats sent by the user.
+     */
+    public function sentChats()
+    {
+        return $this->hasMany(ChatModel::class, 'id_sender', 'id_user');
+    }
+
+    /**
+     * Get the chats received by the user.
+     */
+    public function receivedChats()
+    {
+        return $this->hasMany(ChatModel::class, 'id_receiver', 'id_user');
     }
 }

@@ -12,8 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rating_review_models', function (Blueprint $table) {
-            $table->id();
+            $table->string('id_reviewer', 20);
+            $table->string('id_reviewed', 20);
+            $table->text('ulasan')->nullable();
+            $table->unsignedTinyInteger('rating');
+            $table->timestamp('tanggal_rating')->useCurrent();
+            $table->enum('role', ['worker', 'recruiter']);
             $table->timestamps();
+
+            $table->foreign('id_reviewer')->references('id_user')->on('users')->onDelete('cascade');
+            $table->foreign('id_reviewed')->references('id_user')->on('users')->onDelete('cascade');
         });
     }
 

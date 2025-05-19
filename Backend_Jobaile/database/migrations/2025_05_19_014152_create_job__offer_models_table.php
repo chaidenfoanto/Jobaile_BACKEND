@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('job__offer_models', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_job');
+            $table->string('id_recruiter', 20);
+            $table->string('job_title', 100);
+            $table->text('desc')->nullable();
+            $table->enum('status', ['open', 'closed', 'pending'])->default('open');
             $table->timestamps();
+
+            $table->foreign('id_recruiter')->references('id_recruiter')->on('recruiter_models')->onDelete('cascade');
         });
     }
 

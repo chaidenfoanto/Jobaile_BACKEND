@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('matchmaking_models', function (Blueprint $table) {
-            $table->id();
+            $table->string('id_match', 20)->primary();
+            $table->string('id_worker', 20);
+            $table->string('id_recruiter', 20);
+            $table->unsignedBigInteger('id_job');
+            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+            $table->timestamp('matched_at')->useCurrent();
             $table->timestamps();
+
+            $table->foreign('id_worker')->references('id_worker')->on('worker_models')->onDelete('cascade');
+            $table->foreign('id_recruiter')->references('id_recruiter')->on('recruiter_models')->onDelete('cascade');
+            $table->foreign('id_job')->references('id_job')->on('job_offers')->onDelete('cascade');
         });
     }
 

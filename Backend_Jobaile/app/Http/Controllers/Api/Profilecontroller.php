@@ -4,41 +4,33 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Rule;
+use Illuminate\Validation\Rules\Enum;
+use App\Enums\Gender;
+use Illuminate\Support\Facades\Storage;
+use App\Models\RecruiterModel;
 
 class Profilecontroller extends Controller
 {
-    public function profileuser(Request $request)
+
+    public function getProfile(Request $request)
     {
-        try {
-            $user = auth()->user();
+        $user = auth()->user();
 
-            if (!$user) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'User not found',
-                ], 404);
-            }
-
-            $userProfile = [
-                'fullname' => $user->fullname,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'ktp_card_path' => $user->ktp_card_path
-            ];
-
+        if (!$user) {
             return response()->json([
-                'status' => true,
-                'message' => 'User profile fetched successfully',
-                'data' => $userProfile,
-            ], 200);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'An error occurred while fetching user profile',
-                'error' => $e->getMessage(),
-            ], 500);
+                'status' => 'error',
+                'message' => 'User tidak terautentikasi.',
+            ], 401);
         }
 
+        return response()->json([
+            'status' => true,
+            'message' => 'tukang found successfully',
+            'data' => $user
+        ], 200);
     }
 }

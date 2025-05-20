@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->foreign('id_worker')->references('id_worker')->on('worker_models')->onDelete('cascade');
             $table->foreign('id_recruiter')->references('id_recruiter')->on('recruiter_models')->onDelete('cascade');
-            $table->foreign('id_job')->references('id_job')->on('job_offers')->onDelete('cascade');
+            $table->foreign('id_job')->references('id_job')->on('job__offer_models')->onDelete('cascade');
 
             $table->unique(['id_worker', 'id_recruiter'], 'unique_worker_recruiter');
         });

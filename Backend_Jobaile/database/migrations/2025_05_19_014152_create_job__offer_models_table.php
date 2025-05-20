@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('job__offer_models', function (Blueprint $table) {
-            $table->id('id_job');
+            $table->unsignedBigInteger('id_job')->primary();
             $table->string('id_recruiter', 20);
             $table->string('job_title', 100);
             $table->text('desc')->nullable();

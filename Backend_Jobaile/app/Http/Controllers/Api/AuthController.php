@@ -24,7 +24,7 @@ class AuthController extends Controller
             'phone' => 'required|string|min:10|max:15',
             'gender' => ['required', new Enum(Gender::class)],
             'birthdate' => 'required|date',
-            'ktp_card_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ktp_card_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -35,18 +35,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $uploadfolder = 'users';
-
         try {
-            $ktp_card = $request->file('ktp_card_path');
-
-            $ktpcard_uploaded_path = $ktp_card->store($uploadfolder, 'public');
-
-            $uploadedImageResponse = array(
-                "image_name" => basename($ktpcard_uploaded_path),
-                "image_url" => Storage::disk('public')->url($ktpcard_uploaded_path),
-                "mime" => $ktp_card->getClientMimeType()
-            );
 
             $user = User::create([
                 'id_user' => $request->id_user,
@@ -59,12 +48,20 @@ class AuthController extends Controller
                 'role' => 'Recruiter',
             ]);
 
+            $uploadfolder = 'users';
+            $ktp_card = $request->file('ktp_card_path');
+            $custom = $user->id_user . '.' . $ktp_card->getClientOriginalExtension();
+            $ktp_card->storeAs($uploadfolder, $custom, 'public');
+
+            $user->ktp_card_path = $custom; 
+            $user->save();
+
             return response()->json([
                 'status' => true,
                 'message' => 'user created successfully',
                 'id_user' => $user->id_user,
                 'data' => $user,
-                'ktp_card_path' => $uploadedImageResponse,
+                'ktp_card_path' => $custom
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -95,19 +92,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $uploadfolder = 'users';
-
         try {
-            $ktp_card = $request->file('ktp_card_path');
-
-            $ktpcard_uploaded_path = $ktp_card->store($uploadfolder, 'public');
-
-            $uploadedImageResponse = array(
-                "image_name" => basename($ktpcard_uploaded_path),
-                "image_url" => Storage::disk('public')->url($ktpcard_uploaded_path),
-                "mime" => $ktp_card->getClientMimeType()
-            );
-
             $user = User::create([
                 'id_user' => $request->id_user,
                 'fullname' => $request->fullname,
@@ -116,16 +101,23 @@ class AuthController extends Controller
                 'phone' => $request->phone,
                 'gender' => Gender::from($request->gender),
                 'birthdate' => $request->birthdate,
-                'ktp_card_path' => $uploadedImageResponse['image_url'],
                 'role' => 'Worker',
             ]);
+
+            $uploadfolder = 'users';
+            $ktp_card = $request->file('ktp_card_path');
+            $custom = $user->id_user . '.' . $ktp_card->getClientOriginalExtension();
+            $ktp_card->storeAs($uploadfolder, $custom, 'public');
+
+            $user->ktp_card_path = $custom;
+            $user->save();
 
             return response()->json([
                 'status' => true,
                 'message' => 'user created successfully',
                 'id_user' => $user->id_user,
                 'data' => $user,
-                'ktp_card' => $uploadedImageResponse,
+                'ktp_card_path' => $custom,
             ]);
         } catch (\Exception $e) {
             return response()->json([

@@ -12,6 +12,7 @@ use Illuminate\Validation\Rules\Enum;
 use App\Enums\Gender;
 use Illuminate\Support\Facades\Storage;
 use App\Models\RecruiterModel;
+use App\Models\WorkerModel;
 
 
 class ProfileWoRecController extends Controller
@@ -30,9 +31,9 @@ class ProfileWoRecController extends Controller
 
             if ($user->role == 'Recruiter') {
                 $validator = Validator::make($request->all(), [
-                    'house_type' => 'required|string|max:100',
-                    'family_size' => 'required|integer|min:1',
-                    'location_address' => 'required|string|max:100',
+                    'house_type' => 'nullable|string|max:100',
+                    'family_size' => 'nullable|integer|min:1',
+                    'location_address' => 'nullable|string|max:100',
                     'desc' => 'nullable|string',
                 ]);
         
@@ -43,18 +44,6 @@ class ProfileWoRecController extends Controller
                         'errors' => $validator->errors()
                     ], 422);
                 }
-        
-                $uploadfolder = 'profile';
-
-                $profile = $request->file('profile_picture');
-
-                $profile_uploaded_path = $profile->store($uploadfolder, 'public');
-
-                $uploadedImageResponse = array(
-                    "image_name" => basename($profile_uploaded_path),
-                    "image_url" => Storage::disk('public')->url($profile_uploaded_path),
-                    "mime" => $profile->getClientMimeType()
-                );
 
                 $user = RecruiterModel::create([
                     'id_recruiter' => $request->id_recruiter,
@@ -65,11 +54,23 @@ class ProfileWoRecController extends Controller
                     'desc' => $request->desc,
                 ]);
 
+                $uploadfolder = 'profile';
+                $profile = $request->file('profile_picture');
+
+                if ($profile && $profile->isValid()) {
+                    $custom = $user->id_recruiter . '.' . $profile->getClientOriginalExtension();
+                    $profile->storeAs($uploadfolder, $custom , 'public');
+                } else {
+                    $user->profile_picture = null;
+                }
+
+                $user->profile_picture = $custom;
+                $user->save();
+
                 return response()->json([
                     'status' => true,
                     'message' => 'user created successfully',
                     'data' => $user,
-                    'profile_picture' => $uploadedImageResponse,
                 ]);
             } else if ($user->role == 'Worker') {
                 $validator = Validator::make($request->all(), [
@@ -88,18 +89,6 @@ class ProfileWoRecController extends Controller
                         'errors' => $validator->errors()
                     ], 422);
                 }
-        
-                $uploadfolder = 'profile';
-
-                $profile = $request->file('profile_picture');
-
-                $profile_uploaded_path = $profile->store($uploadfolder, 'public');
-
-                $uploadedImageResponse = array(
-                    "image_name" => basename($profile_uploaded_path),
-                    "image_url" => Storage::disk('public')->url($profile_uploaded_path),
-                    "mime" => $profile->getClientMimeType()
-                );
 
                 $user = WorkerModel::create([
                     'id_worker' => $request->id_worker,
@@ -112,11 +101,23 @@ class ProfileWoRecController extends Controller
                     'availability' => $request->availability,
                 ]);
 
+                $tempatnya = 'profile';
+                $profile = $request->file('profile_picture');
+
+                if ($profile && $profile->isValid()) {
+                    $custom = $user->id_worker . '.' . $profile->getClientOriginalExtension();
+                    $profile->storeAs($tempatnya, $custom, 'public');
+                } else {
+                    $user->profile_picture = null;
+                }
+
+                $user->profile_picture = $custom;
+                $user->save();
+
                 return response()->json([
                     'status' => true,
                     'message' => 'user created successfully',
                     'data' => $user,
-                    'profile_picture' => $uploadedImageResponse,
                 ]);
             }
             
@@ -150,7 +151,7 @@ class ProfileWoRecController extends Controller
                     'family_size' => 'required|integer|min:1',
                     'location_address' => 'required|string|max:100',
                     'desc' => 'nullable|string',
-                    'profile_picture' => 'nullable|image|max:2048', // optional upload validation
+                    'profile_picture' => 'nullable|image|max:2048',
                 ]);
 
                 if ($validator->fails()) {
@@ -162,7 +163,6 @@ class ProfileWoRecController extends Controller
                 }
 
                 $profile = RecruiterModel::where('id_user', $user->id_user)->first();
-
                 if (!$profile) {
                     return response()->json([
                         'status' => false,
@@ -170,34 +170,32 @@ class ProfileWoRecController extends Controller
                     ], 404);
                 }
 
-                $profile->house_type = $request->house_type;
-                $profile->family_size = $request->family_size;
-                $profile->location_address = $request->location_address;
-                $profile->desc = $request->desc;
+                $data = $request->only(['house_type', 'family_size', 'location_address', 'desc']);
 
                 if ($request->hasFile('profile_picture')) {
-                    $uploadfolder = 'profile';
-                    $profile_uploaded_path = $request->file('profile_picture')->store($uploadfolder, 'public');
-                    $profile->profile_picture = basename($profile_uploaded_path);
+                    if ($profile->profile_picture) {
+                        Storage::disk('public')->delete('profile/' . $profile->profile_picture);
+                    }
 
-                    $uploadedImageResponse = [
-                        "image_name" => basename($profile_uploaded_path),
-                        "image_url" => Storage::disk('public')->url($profile_uploaded_path),
-                        "mime" => $request->file('profile_picture')->getClientMimeType()
-                    ];
-                } else {
-                    $uploadedImageResponse = null;
+                    $uploadfolder = 'profile';
+                    $profile_uploaded_path = $request->file('profile_picture');
+                    $filename = $profile->id_recruiter . '.' . $profile_uploaded_path->getClientOriginalExtension();
+                    $profile_uploaded_path->storeAs($uploadfolder, $filename, 'public');
+
+                    $data['profile_picture'] = $filename;
                 }
 
-                $profile->save();
+                $profile->update($data);
 
                 return response()->json([
                     'status' => true,
                     'message' => 'Profile updated successfully',
                     'data' => $profile,
-                    'profile_picture' => $uploadedImageResponse,
                 ]);
-            } else if ($user->role == 'Worker') {
+            }
+
+            // ------------------- Worker -------------------
+            if ($user->role == 'Worker') {
                 $validator = Validator::make($request->all(), [
                     'bio' => 'nullable|string',
                     'skill' => 'nullable|string',
@@ -205,7 +203,7 @@ class ProfileWoRecController extends Controller
                     'location' => 'nullable|string|max:100',
                     'expected_salary' => 'nullable|integer|min:0',
                     'availability' => 'nullable|in:penuh_waktu,paruh_waktu,mingguan,bulanan',
-                    'profile_picture' => 'nullable|image|max:2048', // optional upload validation
+                    'profile_picture' => 'nullable|image|max:2048',
                 ]);
 
                 if ($validator->fails()) {
@@ -217,7 +215,6 @@ class ProfileWoRecController extends Controller
                 }
 
                 $profile = WorkerModel::where('id_user', $user->id_user)->first();
-
                 if (!$profile) {
                     return response()->json([
                         'status' => false,
@@ -225,34 +222,27 @@ class ProfileWoRecController extends Controller
                     ], 404);
                 }
 
-                $profile->bio = $request->bio;
-                $profile->skill = $request->skill;
-                $profile->experience_years = $request->experience_years;
-                $profile->location = $request->location;
-                $profile->expected_salary = $request->expected_salary;
-                $profile->availability = $request->availability;
+                $data = $request->only(['bio', 'skill', 'experience_years', 'location', 'expected_salary', 'availability']);
 
                 if ($request->hasFile('profile_picture')) {
-                    $uploadfolder = 'profile';
-                    $profile_uploaded_path = $request->file('profile_picture')->store($uploadfolder, 'public');
-                    $profile->profile_picture = basename($profile_uploaded_path);
+                    if ($profile->profile_picture) {
+                        Storage::disk('public')->delete('profile/' . $profile->profile_picture);
+                    }
 
-                    $uploadedImageResponse = [
-                        "image_name" => basename($profile_uploaded_path),
-                        "image_url" => Storage::disk('public')->url($profile_uploaded_path),
-                        "mime" => $request->file('profile_picture')->getClientMimeType()
-                    ];
-                } else {
-                    $uploadedImageResponse = null;
+                    $uploadfolder = 'profile';
+                    $profile_uploaded_path = $request->file('profile_picture');
+                    $filename = $profile->id_worker . '.' . $profile_uploaded_path->getClientOriginalExtension();
+                    $profile_uploaded_path->storeAs($uploadfolder, $filename, 'public');
+
+                    $data['profile_picture'] = $filename;
                 }
 
-                $profile->save();
+                $profile->update($data);
 
                 return response()->json([
                     'status' => true,
                     'message' => 'Profile updated successfully',
                     'data' => $profile,
-                    'profile_picture' => $uploadedImageResponse,
                 ]);
             }
 
@@ -268,4 +258,5 @@ class ProfileWoRecController extends Controller
             ], 500);
         }
     }
+
 }

@@ -1,0 +1,647 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Jobaile API",
+        "description": "Dokumentasi API untuk aplikasi Jobaile (versi pertama)",
+        "contact": {
+            "name": "Jobaile Dev Team",
+            "email": "support@jobaile.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Server utama"
+        }
+    ],
+    "paths": {
+        "/api/registerrecruiter": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registrasi akun untuk recruiter",
+                "operationId": "c39714188d4f505a710e82e8ca9e2aff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "fullname",
+                                    "email",
+                                    "password",
+                                    "phone",
+                                    "gender",
+                                    "birthdate",
+                                    "ktp_card_path"
+                                ],
+                                "properties": {
+                                    "fullname": {
+                                        "type": "string",
+                                        "maxLength": 50
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "maxLength": 15,
+                                        "minLength": 10
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Male",
+                                            "Female"
+                                        ]
+                                    },
+                                    "birthdate": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "ktp_card_path": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User berhasil didaftarkan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                }
+            }
+        },
+        "/api/registerworker": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registrasi akun untuk worker",
+                "operationId": "99511fc4d575be873547d786cd46049d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "fullname",
+                                    "email",
+                                    "password",
+                                    "phone",
+                                    "gender",
+                                    "birthdate",
+                                    "ktp_card_path"
+                                ],
+                                "properties": {
+                                    "fullname": {
+                                        "type": "string",
+                                        "maxLength": 50
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "maxLength": 15,
+                                        "minLength": 10
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Male",
+                                            "Female"
+                                        ]
+                                    },
+                                    "birthdate": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "ktp_card_path": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User berhasil didaftarkan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user",
+                "operationId": "222b2625838e3c57e017987f73598fda",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login berhasil dan token diberikan"
+                    },
+                    "401": {
+                        "description": "Kredensial salah"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "operationId": "ad65cbbd4e9f201619eae184a5961a98",
+                "responses": {
+                    "200": {
+                        "description": "Logout berhasil"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboardworec": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Menampilkan dashboard recruiter berisi daftar ART (worker)",
+                "operationId": "6b71af0875683670c67fd72817a0b8da",
+                "responses": {
+                    "200": {
+                        "description": "Daftar ART berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Worker found successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id_worker": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "bio": {
+                                                        "type": "string",
+                                                        "example": "Saya ART berpengalaman..."
+                                                    },
+                                                    "umur": {
+                                                        "type": "integer",
+                                                        "example": 25
+                                                    },
+                                                    "fullname": {
+                                                        "type": "string",
+                                                        "example": "Siti Aminah"
+                                                    },
+                                                    "profile_picture": {
+                                                        "type": "string",
+                                                        "example": "siti.png"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Terjadi error saat mengambil data"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/postworec": {
+            "post": {
+                "tags": [
+                    "ProfileWoRec"
+                ],
+                "summary": "Membuat profil Worker atau Recruiter",
+                "description": "Endpoint ini digunakan untuk membuat profil sesuai role user yang sedang login.",
+                "operationId": "createWorkerOrRecruiterProfile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "id_recruiter"
+                                        ],
+                                        "properties": {
+                                            "id_recruiter": {
+                                                "type": "string",
+                                                "example": "R001"
+                                            },
+                                            "house_type": {
+                                                "type": "string",
+                                                "example": "Rumah"
+                                            },
+                                            "family_size": {
+                                                "type": "integer",
+                                                "example": 4
+                                            },
+                                            "location_address": {
+                                                "type": "string",
+                                                "example": "Jl. Kenangan No.10"
+                                            },
+                                            "desc": {
+                                                "type": "string",
+                                                "example": "Mencari ART untuk membantu bersih-bersih."
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "required": [
+                                            "id_worker"
+                                        ],
+                                        "properties": {
+                                            "id_worker": {
+                                                "type": "string",
+                                                "example": "W001"
+                                            },
+                                            "bio": {
+                                                "type": "string",
+                                                "example": "Saya berpengalaman 5 tahun di bidang kebersihan."
+                                            },
+                                            "skill": {
+                                                "type": "string",
+                                                "example": "Bersih rumah, memasak"
+                                            },
+                                            "experience_years": {
+                                                "type": "integer",
+                                                "example": 5
+                                            },
+                                            "location": {
+                                                "type": "string",
+                                                "example": "Depok"
+                                            },
+                                            "expected_salary": {
+                                                "type": "integer",
+                                                "example": 3000000
+                                            },
+                                            "availability": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "penuh_waktu",
+                                                    "paruh_waktu",
+                                                    "mingguan",
+                                                    "bulanan"
+                                                ],
+                                                "example": "penuh_waktu"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil membuat profil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "user created successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/updateworec": {
+            "post": {
+                "tags": [
+                    "ProfileWoRec"
+                ],
+                "summary": "Memperbarui profil Worker atau Recruiter",
+                "description": "Endpoint ini digunakan untuk memperbarui profil sesuai role user yang sedang login.",
+                "operationId": "updateWorkerOrRecruiterProfile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "oneOf": [
+                                    {
+                                        "properties": {
+                                            "house_type": {
+                                                "type": "string",
+                                                "example": "Apartemen"
+                                            },
+                                            "family_size": {
+                                                "type": "integer",
+                                                "example": 3
+                                            },
+                                            "location_address": {
+                                                "type": "string",
+                                                "example": "Jl. Baru No. 1"
+                                            },
+                                            "desc": {
+                                                "type": "string",
+                                                "example": "Butuh ART paruh waktu."
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "properties": {
+                                            "bio": {
+                                                "type": "string",
+                                                "example": "Pengalaman ART 3 tahun."
+                                            },
+                                            "skill": {
+                                                "type": "string",
+                                                "example": "Menyetrika, mencuci"
+                                            },
+                                            "experience_years": {
+                                                "type": "integer",
+                                                "example": 3
+                                            },
+                                            "location": {
+                                                "type": "string",
+                                                "example": "Jakarta"
+                                            },
+                                            "expected_salary": {
+                                                "type": "integer",
+                                                "example": 2500000
+                                            },
+                                            "availability": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "penuh_waktu",
+                                                    "paruh_waktu",
+                                                    "mingguan",
+                                                    "bulanan"
+                                                ],
+                                                "example": "mingguan"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil memperbarui profil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile updated successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi atau role tidak valid"
+                    },
+                    "404": {
+                        "description": "Profil tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/profile": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get authenticated user profile",
+                "operationId": "32615b9ff077fbd3362b8c321e4dac8d",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "tukang found successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id_user": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "fullname": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "08123456789"
+                                                },
+                                                "gender": {
+                                                    "type": "string",
+                                                    "example": "male"
+                                                },
+                                                "birthdate": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2000-01-01"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Email not verified"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard"
+        },
+        {
+            "name": "ProfileWoRec",
+            "description": "ProfileWoRec"
+        },
+        {
+            "name": "Profile",
+            "description": "Profile"
+        }
+    ]
+}

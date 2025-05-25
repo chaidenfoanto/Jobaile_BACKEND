@@ -15,6 +15,38 @@ use App\Models\RecruiterModel;
 
 class Profilecontroller extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/profile",
+     *     summary="Get authenticated user profile",
+     *     tags={"Profile Worker Recruiter"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="tukang found successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id_user", type="integer", example=1),
+     *                 @OA\Property(property="fullname", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *                 @OA\Property(property="phone", type="string", example="08123456789"),
+     *                 @OA\Property(property="gender", type="string", example="male"),
+     *                 @OA\Property(property="birthdate", type="string", format="date", example="2000-01-01"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Email not verified"
+     *     )
+     * )
+     */
 
     public function getProfile(Request $request)
     {
@@ -25,6 +57,13 @@ class Profilecontroller extends Controller
                 'status' => 'error',
                 'message' => 'User tidak terautentikasi.',
             ], 401);
+        }
+
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Email not verified. Please verify your email first.',
+            ], 403);
         }
 
         return response()->json([

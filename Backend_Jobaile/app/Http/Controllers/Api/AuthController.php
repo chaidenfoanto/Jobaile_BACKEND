@@ -15,6 +15,33 @@ use Illuminate\Support\Facades\URL;
 
 class AuthController extends Controller
 {
+        /**
+     * @OA\Post(
+     *     path="/api/registerrecruiter",
+     *     summary="Registrasi akun untuk recruiter",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"fullname", "email", "password", "phone", "gender", "birthdate", "ktp_card_path"},
+     *                 @OA\Property(property="fullname", type="string", maxLength=50),
+     *                 @OA\Property(property="email", type="string", format="email"),
+     *                 @OA\Property(property="password", type="string", format="password"),
+     *                 @OA\Property(property="phone", type="string", minLength=10, maxLength=15),
+     *                 @OA\Property(property="gender", type="string", enum={"Male", "Female"}),
+     *                 @OA\Property(property="birthdate", type="string", format="date"),
+     *                 @OA\Property(property="ktp_card_path", type="string", format="binary")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="User berhasil didaftarkan"),
+     *     @OA\Response(response=422, description="Validasi gagal"),
+     *     @OA\Response(response=500, description="Kesalahan server")
+     * )
+     */
+
     public function registerRecruiter(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -74,6 +101,34 @@ class AuthController extends Controller
         }
     }
 
+        /**
+     * @OA\Post(
+     *     path="/api/registerworker",
+     *     summary="Registrasi akun untuk worker",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"fullname", "email", "password", "phone", "gender", "birthdate", "ktp_card_path"},
+     *                 @OA\Property(property="fullname", type="string", maxLength=50),
+     *                 @OA\Property(property="email", type="string", format="email"),
+     *                 @OA\Property(property="password", type="string", format="password"),
+     *                 @OA\Property(property="phone", type="string", minLength=10, maxLength=15),
+     *                 @OA\Property(property="gender", type="string", enum={"Male", "Female"}),
+     *                 @OA\Property(property="birthdate", type="string", format="date"),
+     *                 @OA\Property(property="ktp_card_path", type="string", format="binary")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="User berhasil didaftarkan"),
+     *     @OA\Response(response=422, description="Validasi gagal"),
+     *     @OA\Response(response=500, description="Kesalahan server")
+     * )
+     */
+
+
     public function registerWorker(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -130,6 +185,28 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+        /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Login user",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Login berhasil dan token diberikan"),
+     *     @OA\Response(response=401, description="Kredensial salah"),
+     *     @OA\Response(response=403, description="Email belum diverifikasi"),
+     *     @OA\Response(response=422, description="Validasi gagal"),
+     *     @OA\Response(response=500, description="Kesalahan server")
+     * )
+     */
+
 
     public function login(Request $request)
     {
@@ -194,9 +271,28 @@ class AuthController extends Controller
         }
     }
 
+        /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Logout user",
+     *     tags={"Auth"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Logout berhasil"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
+
+
     public function logout()
     {
         $user = auth()->user();
+
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Email not verified. Please verify your email first.',
+            ], 403);
+        }
 
         if ($user) {
             $user->tokens()->delete();
@@ -207,17 +303,17 @@ class AuthController extends Controller
         ]);
     }
 
-    public function gantiPassword(Request $request)
-    {
-        $user = auth()->user();
+    // public function gantiPassword(Request $request)
+    // {
+    //     $user = auth()->user();
 
-        if (!$user) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ], 404);
-        }
+    //     if (!$user) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'User not found'
+    //         ], 404);
+    //     }
 
-        // Implementasi ganti password sesuai kebutuhan
-    }
+    //     // Implementasi ganti password sesuai kebutuhan
+    // }
 }

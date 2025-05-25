@@ -17,7 +17,7 @@ use App\Models\WorkerModel;
 
 class ProfileWoRecController extends Controller
 {
-    public function posteworec(Request $request)
+    public function postworec(Request $request)
     {
         try {
             $user = auth()->user();
@@ -35,6 +35,7 @@ class ProfileWoRecController extends Controller
                     'family_size' => 'nullable|integer|min:1',
                     'location_address' => 'nullable|string|max:100',
                     'desc' => 'nullable|string',
+                    'profile_picture' => 'nullable|image|mimes:jpeg,jpg,png|max:2048'
                 ]);
         
                 if ($validator->fails()) {
@@ -57,11 +58,11 @@ class ProfileWoRecController extends Controller
                 $uploadfolder = 'profile';
                 $profile = $request->file('profile_picture');
 
+                $custom = null;
+
                 if ($profile && $profile->isValid()) {
                     $custom = $user->id_recruiter . '.' . $profile->getClientOriginalExtension();
                     $profile->storeAs($uploadfolder, $custom , 'public');
-                } else {
-                    $user->profile_picture = null;
                 }
 
                 $user->profile_picture = $custom;
@@ -80,6 +81,7 @@ class ProfileWoRecController extends Controller
                     'location' => 'nullable|string|max:100',
                     'expected_salary' => 'nullable|integer|min:0',
                     'availability' => 'nullable|in:penuh_waktu,paruh_waktu,mingguan,bulanan',
+                    'profile_picture' => 'nullable|image|mimes:jpeg,jpg,png|max:2048'
                 ]);
         
                 if ($validator->fails()) {
@@ -104,11 +106,11 @@ class ProfileWoRecController extends Controller
                 $tempatnya = 'profile';
                 $profile = $request->file('profile_picture');
 
+                $custom = null;
+
                 if ($profile && $profile->isValid()) {
                     $custom = $user->id_worker . '.' . $profile->getClientOriginalExtension();
                     $profile->storeAs($tempatnya, $custom, 'public');
-                } else {
-                    $user->profile_picture = null;
                 }
 
                 $user->profile_picture = $custom;
@@ -147,11 +149,11 @@ class ProfileWoRecController extends Controller
 
             if ($user->role == 'Recruiter') {
                 $validator = Validator::make($request->all(), [
-                    'house_type' => 'required|string|max:100',
-                    'family_size' => 'required|integer|min:1',
-                    'location_address' => 'required|string|max:100',
+                    'house_type' => 'nullable|string|max:100',
+                    'family_size' => 'nullable|integer|min:1',
+                    'location_address' => 'nullable|string|max:100',
                     'desc' => 'nullable|string',
-                    'profile_picture' => 'nullable|image|max:2048',
+                    'profile_picture' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
                 ]);
 
                 if ($validator->fails()) {
@@ -203,7 +205,7 @@ class ProfileWoRecController extends Controller
                     'location' => 'nullable|string|max:100',
                     'expected_salary' => 'nullable|integer|min:0',
                     'availability' => 'nullable|in:penuh_waktu,paruh_waktu,mingguan,bulanan',
-                    'profile_picture' => 'nullable|image|max:2048',
+                    'profile_picture' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
                 ]);
 
                 if ($validator->fails()) {

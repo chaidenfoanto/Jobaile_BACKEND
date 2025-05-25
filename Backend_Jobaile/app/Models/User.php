@@ -10,8 +10,10 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
 use App\Models\WorkerModel;
 use App\Models\RecruiterModel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\CustomVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
@@ -71,6 +73,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_verified' => 'boolean',
         ];
     }
 
@@ -117,5 +120,10 @@ class User extends Authenticatable
     public function receivedChats()
     {
         return $this->hasMany(ChatModel::class, 'id_receiver', 'id_user');
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail);
     }
 }

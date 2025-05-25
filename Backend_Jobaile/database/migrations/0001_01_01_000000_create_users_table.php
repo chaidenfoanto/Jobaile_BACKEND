@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date('birthdate');
             $table->string('ktp_card_path')->nullable(); // jika ingin simpan path KTP
             $table->enum('role', ['Worker', 'Recruiter'])->nullable();
+            $table->boolean('is_verified')->default(false);
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

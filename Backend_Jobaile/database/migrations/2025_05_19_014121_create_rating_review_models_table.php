@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('id_reviewer', 20);
             $table->string('id_reviewed', 20);
             $table->text('ulasan')->nullable();
-            $table->unsignedTinyInteger('rating');
+            $table->unsignedTinyInteger('rating')->default(0);
             $table->timestamp('tanggal_rating')->useCurrent();
             $table->enum('role', ['worker', 'recruiter']);
             $table->timestamps();

@@ -33,4 +33,6 @@ class Profilecontroller extends Controller
             'data' => $user
         ], 200);
     }
+
+    
 }

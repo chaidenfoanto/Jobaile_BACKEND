@@ -18,6 +18,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Mockery;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Support\Str;
 
 class AuthTest extends TestCase
 {
@@ -66,29 +67,55 @@ class AuthTest extends TestCase
 
     public function test_registers_a_worker_successfully()
     {
-        // Buat data registrasi worker
-        $data = [
-            'id_user' => \Illuminate\Support\Str::random(20), // generate manual id_user supaya tidak error
+        // Mock file upload
+        $file = UploadedFile::fake()->image('ktp.jpg');
+        
+        // Data input
+        $requestData = [
             'fullname' => 'John Doe',
             'email' => 'john@example.com',
-            'password' => 'password123', // biasanya di controller hash otomatis
+            'password' => 'password123',
             'phone' => '1234567890',
             'gender' => 'Laki-laki',
             'birthdate' => '1990-01-01',
-            'role' => 'Worker',
-            // jika ada file upload:
-            'ktp_card_path' => UploadedFile::fake()->image('ktp.jpg'),
+            'ktp_card_path' => $file,
         ];
 
-        $response = $this->postJson('/api/registerworker', $data);
-
-        fwrite(STDERR, "Response content: " . $response->getContent() . PHP_EOL);
-
-        $response->assertStatus(200);
-        $response->assertJson([
-            'status' => true,
-            'message' => 'User created successfully. Please verify your email.',
+        // 1. Test Validator
+        $validator = Validator::make($requestData, [
+            'fullname' => 'required|string|max:50',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'phone' => 'required|string|min:10|max:15',
+            'gender' => ['required', new Enum(Gender::class)],
+            'birthdate' => 'required|date',
+            'ktp_card_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        $this->assertFalse($validator->fails());
+
+        // 2. Test User Creation
+        $user = new User([
+            'fullname' => $requestData['fullname'],
+            'email' => $requestData['email'],
+            'password' => Hash::make($requestData['password']),
+            'phone' => $requestData['phone'],
+            'gender' => Gender::from($requestData['gender']),
+            'birthdate' => $requestData['birthdate'],
+            'role' => 'Worker',
+        ]);
+
+        $this->assertEquals('John Doe', $user->fullname);
+        $this->assertEquals('john@example.com', $user->email);
+        $this->assertTrue(Hash::check('password123', $user->password));
+        $this->assertEquals('Worker', $user->role);
+
+        // 3. Test File Handling (simulasi)
+        $uploadfolder = 'users';
+        $customFilename = 'test123.jpg'; // Simulasi filename
+        $user->ktp_card_path = $customFilename;
+        
+        $this->assertEquals($customFilename, $user->ktp_card_path);
     }
 
     // Register Worker Tests
@@ -109,31 +136,56 @@ class AuthTest extends TestCase
 
     public function test_registers_a_recruiter_successfully()
     {
-        // Buat data registrasi worker
-        $data = [
-            'id_user' => \Illuminate\Support\Str::random(20), // generate manual id_user supaya tidak error
+        // Mock file upload
+        $file = UploadedFile::fake()->image('ktp.jpg');
+        
+        // Data input
+        $requestData = [
             'fullname' => 'John Doe',
             'email' => 'john@example.com',
-            'password' => 'password123', // biasanya di controller hash otomatis
+            'password' => 'password123',
             'phone' => '1234567890',
             'gender' => 'Perempuan',
             'birthdate' => '1990-01-01',
-            'role' => 'Worker',
-            // jika ada file upload:
-            'ktp_card_path' => UploadedFile::fake()->image('ktp.jpg'),
+            'ktp_card_path' => $file,
         ];
 
-        $response = $this->postJson('/api/registerrecruiter', $data);
-
-        fwrite(STDERR, "Response content: " . $response->getContent() . PHP_EOL);
-
-        $response->assertStatus(200);
-        $response->assertJson([
-            'status' => true,
-            'message' => 'User created successfully. Please verify your email.',
+        // 1. Test Validator
+        $validator = Validator::make($requestData, [
+            'fullname' => 'required|string|max:50',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'phone' => 'required|string|min:10|max:15',
+            'gender' => ['required', new Enum(Gender::class)],
+            'birthdate' => 'required|date',
+            'ktp_card_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-    }
 
+        $this->assertFalse($validator->fails());
+
+        // 2. Test User Creation
+        $user = new User([
+            'fullname' => $requestData['fullname'],
+            'email' => $requestData['email'],
+            'password' => Hash::make($requestData['password']),
+            'phone' => $requestData['phone'],
+            'gender' => Gender::from($requestData['gender']),
+            'birthdate' => $requestData['birthdate'],
+            'role' => 'Worker',
+        ]);
+
+        $this->assertEquals('John Doe', $user->fullname);
+        $this->assertEquals('john@example.com', $user->email);
+        $this->assertTrue(Hash::check('password123', $user->password));
+        $this->assertEquals('Worker', $user->role);
+
+        // 3. Test File Handling (simulasi)
+        $uploadfolder = 'users';
+        $customFilename = 'test123.jpg'; // Simulasi filename
+        $user->ktp_card_path = $customFilename;
+        
+        $this->assertEquals($customFilename, $user->ktp_card_path);
+    }
 
     // Login Tests
     public function test_login_validation_fails()

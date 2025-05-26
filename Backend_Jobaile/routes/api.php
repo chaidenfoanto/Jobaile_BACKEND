@@ -69,6 +69,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/postworec', [ProfileWoRecController::class, 'postworec']);
     Route::post('/putworec', [ProfileWoRecController::class, 'updateProfile']);
     Route::get('/dashboardworec', [DashboardController::class, 'DashboardWoRec']);
+    Route::get('/detailprofileworker/{id}', [DashboardController::class, 'DetailWorker']);
 
     // ❓ Cek status email sudah terverifikasi atau belum
     Route::get('/email-status', function (Request $request) {

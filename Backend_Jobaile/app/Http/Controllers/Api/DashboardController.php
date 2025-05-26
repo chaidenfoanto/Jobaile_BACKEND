@@ -63,7 +63,7 @@ class DashboardController extends Controller
 
                     return [
                         'id_worker' => $worker->id_worker,
-                        'bio' => $worker->user->bio ?? 'Belum ada bio',
+                        'bio' => $worker->bio ?? 'Belum ada bio',
                         'umur' => $umur,
                         'fullname' => $worker->user->fullname,
                         'profile_picture' => $worker->profile_picture,
@@ -82,6 +82,61 @@ class DashboardController extends Controller
                 'status' => false,
                 'message' => 'An error occurred',
                 'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function DetailWorker($id) {
+        try{
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'User belum terautentikasi'
+                ], 401);
+            }
+
+            if (!$user->hasVerifiedEmail()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Email not verified. Please verify your email first.',
+                ], 403);
+            }
+
+            if ($user->role != 'Recruiter') {
+                return response()->json([
+                    'status' => false,
+                    'messagee' => 'Hanya recruiter yang dapat mengakses detail worker'
+                ], 401);
+            }
+
+            $worker = WorkerModel::where('id_worker', $id)
+                ->with('user')
+                ->first();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Detail worker found successfully',
+                'data' => [
+                    'id_worker' => $worker->id_worker,
+                    'fullname' => $worker->user->fullname,
+                    'bio' => $worker->bio,
+                    'umur' => Carbon::parse($worker->user->birthdate)->age ?? "Belum ada umur",
+                    'profile_picture' => $worker->profile_picture,
+                    'skill' => $worker->skill,
+                    'experience_years' => $worker->experience_years,
+                    'location' => $worker->location,
+                    'expected_salary' => $worker->expected_salary,
+                    'availability' => $worker->availability
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occured',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

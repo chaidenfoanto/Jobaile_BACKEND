@@ -97,6 +97,13 @@ class DashboardController extends Controller
                 ], 401);
             }
 
+            if (!$user->hasVerifiedEmail()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Email not verified. Please verify your email first.',
+                ], 403);
+            }
+
             if ($user->role != 'Recruiter') {
                 return response()->json([
                     'status' => false,

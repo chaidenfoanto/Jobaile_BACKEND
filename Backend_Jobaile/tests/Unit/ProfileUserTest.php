@@ -39,7 +39,7 @@ class ProfileUserTest extends TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($responseData['status']);
-        $this->assertEquals('tukang found successfully', $responseData['message']);
+        $this->assertEquals('user found successfully', $responseData['message']);
         $this->assertEquals($mockObject->id_user, $responseData['id_user']);
         $this->assertEquals($mockObject->fullname, $responseData['fullname']);
         $this->assertEquals($mockObject->email, $responseData['email']);

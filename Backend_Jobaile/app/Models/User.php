@@ -63,6 +63,15 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
+    public function getAgeAttribute()
+    {
+        if (!$this->birthdate) {
+            return null;
+        }
+        return \Carbon\Carbon::parse($this->birthdate)->age;
+    }
+
+
     /**
      * Get the attributes that should be cast.
      *

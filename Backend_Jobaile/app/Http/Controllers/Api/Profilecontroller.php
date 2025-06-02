@@ -68,7 +68,7 @@ class Profilecontroller extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'tukang found successfully',
+            'message' => 'user found successfully',
             'id_user' => $user->id_user,
             'fullname' => $user->fullname,
             'email' => $user->email,

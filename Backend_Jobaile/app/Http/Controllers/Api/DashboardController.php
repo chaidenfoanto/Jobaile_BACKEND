@@ -45,7 +45,8 @@ class DashboardController extends Controller
      *     )
      * )
      */
-    public function DashboardWoRec(Request $request) {
+    public function DashboardWoRec(Request $request)
+    {
         try {
             $user = auth()->user();
 
@@ -56,32 +57,64 @@ class DashboardController extends Controller
                 ], 404);
             }
 
-            if ($user->role == 'Recruiter') {
-                $workers = WorkerModel::inRandomOrder()->with('user')->get()->map(function ($worker) {
-                    $birthdate = $worker->user->birthdate ?? null;
-                    $umur = $birthdate ? \Carbon\Carbon::parse($birthdate)->age : "Belum ada umur";
+            if ($user->role !== 'Recruiter') {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Akses hanya untuk recruiter',
+                ], 403);
+            }
 
-                    return [
-                        'id_worker' => $worker->id_worker,
-                        'bio' => $worker->bio ?? 'Belum ada bio',
-                        'umur' => $umur,
-                        'fullname' => $worker->user->fullname,
-                        'profile_picture' => $worker->profile_picture,
-                    ];
+            // Ambil input filter (bisa kosong)
+            $filters = $request->only(['bio', 'location']);
+
+            // Mulai query base: hanya ambil user dengan role 'worker'
+            $query = \App\Models\WorkerModel::with('user')
+                ->whereHas('user', function ($q) {
+                    $q->where('role', 'worker');
                 });
 
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Worker found successfully',
-                    'data' => $workers,
-                ], 200);
-                
+            // Terapkan filter jika diberikan
+            if (!empty($filters['bio'])) {
+                $query->where('bio', 'like', '%' . $filters['bio'] . '%');
             }
+
+            if (!empty($filters['location'])) {
+                $query->where('location', 'like', '%' . $filters['location'] . '%');
+            }
+
+            // Ambil data
+            $workers = $query->inRandomOrder()->get();
+
+            // Format data untuk respons
+            $result = $workers->map(function ($worker) {
+                $birthdate = $worker->user->birthdate ?? null;
+                $umur = $birthdate ? \Carbon\Carbon::parse($birthdate)->age : "Belum ada umur";
+
+                $rating = \App\Models\RatingReviewModel::where('id_reviewed', $worker->id_user)
+                    ->where('role', 'worker')
+                    ->avg('rating');
+
+                return [
+                    'id_worker' => $worker->id_worker,
+                    'fullname' => $worker->user->fullname ?? '-',
+                    'bio' => $worker->bio ?? 'Belum ada bio',
+                    'umur' => $umur,
+                    'location' => $worker->location ?? '-',
+                    'profile_picture' => $worker->profile_picture ?? null,
+                    'rating' => round($rating ?? 0, 2)
+                ];
+            });
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Worker ditemukan',
+                'data' => $result
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'An error occurred',
-                'error' => $e->getMessage(),
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

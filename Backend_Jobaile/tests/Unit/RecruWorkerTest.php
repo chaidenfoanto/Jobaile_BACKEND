@@ -75,5 +75,7 @@ class RecruWorkerTest extends TestCase
         $this->assertContains($matchedWorker->user->getAgeAttribute(), [35, 35]); // umur dari 1990
         $this->assertContains($matchedWorker->user->receivedReviews->avg('rating'), [4.5, 3.0]);
     }
+
+    
     
 }

@@ -24,9 +24,18 @@ class CustomVerifyEmail extends VerifyEmail
             ->line('Jika Anda tidak mendaftar akun, abaikan email ini.');
     }
 
+    /**
+     * Buat URL verifikasi dengan base URL dari APP_URL.
+     */
     protected function verificationUrl($notifiable)
     {
-        $temporarySignedRoute = URL::temporarySignedRoute(
+        // Paksa root URL agar tidak default ke localhost
+        URL::forceRootUrl(config('app.url'));
+
+        // Jika kamu nanti pakai HTTPS, aktifkan baris ini:
+        // URL::forceScheme('https');
+
+        return URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
             [
@@ -34,8 +43,5 @@ class CustomVerifyEmail extends VerifyEmail
                 'hash' => sha1($notifiable->getEmailForVerification()),
             ]
         );
-
-        return $temporarySignedRoute;
     }
-
 }

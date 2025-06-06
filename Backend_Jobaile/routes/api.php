@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Api\RecruiterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,4 +78,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             'email_verified' => $request->user()->hasVerifiedEmail(),
         ]);
     });
+
+    Route::get('/searchworker', [RecruiterController::class, 'search']);
 });

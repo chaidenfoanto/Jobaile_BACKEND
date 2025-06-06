@@ -33,16 +33,15 @@ class ProfileUserTest extends TestCase
 
         $controller = new Profilecontroller();
 
-        $request = new Request();
-        $response = $controller->getProfile($request);
+        $response = $controller->getProfile();
         $responseData = $response->getData(true);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($responseData['status']);
         $this->assertEquals('user found successfully', $responseData['message']);
         $this->assertEquals($mockObject->id_user, $responseData['id_user']);
-        $this->assertEquals($mockObject->fullname, $responseData['fullname']);
-        $this->assertEquals($mockObject->email, $responseData['email']);
-        $this->assertEquals($mockObject->phone, $responseData['phone']);
+        $this->assertEquals('John Doe', $responseData['fullname']);
+        $this->assertEquals('john@example.com', $responseData['email']);
+        $this->assertEquals('08123456789', $responseData['phone']);
     }
 }

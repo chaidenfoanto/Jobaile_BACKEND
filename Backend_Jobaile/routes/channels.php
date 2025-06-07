@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
+Broadcast::channel('chat.{idRecruiter}.{idWorker}', function ($user, $idRecruiter, $idWorker) {
+    return $user->id_user === $idRecruiter || $user->id_user === $idWorker;
 });

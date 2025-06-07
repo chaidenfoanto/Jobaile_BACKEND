@@ -14,10 +14,10 @@ class ChatModel extends Model
         'id_sender',
         'id_receiver',
         'message',
-        'sent_at',
+        'send_at',
     ];
 
-    protected $dates = ['sent_at'];
+    protected $dates = ['send_at'];
 
     public function sender()
     {

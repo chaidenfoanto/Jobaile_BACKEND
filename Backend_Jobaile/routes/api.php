@@ -11,6 +11,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\RecruiterController;
+use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,4 +82,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 
     Route::get('/searchworker', [RecruiterController::class, 'search']);
+    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+    Route::get('/chat/{id_user_b}', [ChatController::class, 'getMessages']);
+    Route::get('/getchat', [ChatController::class, 'getConversations']);
 });

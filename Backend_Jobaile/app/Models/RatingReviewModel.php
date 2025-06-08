@@ -27,7 +27,10 @@ class RatingReviewModel extends Model
         'role',
     ];
 
-    protected $dates = ['tanggal_rating'];
+    protected $casts = [
+        'tanggal_rating' => 'datetime',
+    ];
+    
 
     // Reviewer (User)
     public function reviewer()

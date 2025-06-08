@@ -13,6 +13,38 @@ use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/chat/send",
+     *     summary="Kirim pesan dari user yang login ke user lain",
+     *     tags={"Chat"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"receiver_id", "message"},
+     *             @OA\Property(property="receiver_id", type="string", description="ID user penerima pesan"),
+     *             @OA\Property(property="message", type="string", description="Isi pesan yang dikirim")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Pesan berhasil dikirim",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id_chat", type="integer"),
+     *                 @OA\Property(property="id_sender", type="string"),
+     *                 @OA\Property(property="id_receiver", type="string"),
+     *                 @OA\Property(property="message", type="string"),
+     *                 @OA\Property(property="send_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Email belum diverifikasi atau role tidak sesuai"),
+     *     @OA\Response(response=422, description="Validasi input gagal"),
+     * )
+     */
     public function sendMessage(Request $request)
     {
         $sender = Auth::user();
@@ -60,8 +92,46 @@ class ChatController extends Controller
         ]);
     }
 
-
-
+    /**
+     * @OA\Get(
+     *     path="/api/chat/{id_user_b}",
+     *     summary="Ambil riwayat pesan antara user login dan user lain",
+     *     tags={"Chat"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id_user_b",
+     *         in="path",
+     *         required=true,
+     *         description="ID user yang akan diambil riwayat pesannya",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mengambil pesan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="fullname", type="string"),
+     *                 @OA\Property(property="profile_picture", type="string", nullable=true)
+     *             ),
+     *             @OA\Property(property="messages", type="object",
+     *                 @OA\Property(property="chats", type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="id_chat", type="integer"),
+     *                         @OA\Property(property="id_sender", type="string"),
+     *                         @OA\Property(property="id_receiver", type="string"),
+     *                         @OA\Property(property="message", type="string"),
+     *                         @OA\Property(property="send_at", type="string", format="date-time")
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="send_at", type="string", format="date-time", nullable=true)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Email belum diverifikasi atau role sama"),
+     *     @OA\Response(response=500, description="Kesalahan server"),
+     * )
+     */
     public function getMessages($id_user_b)
     {
         try {
@@ -120,6 +190,34 @@ class ChatController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/getchat",
+     *     summary="Ambil daftar percakapan terakhir user yang login",
+     *     tags={"Chat"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Berhasil mengambil daftar percakapan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean"),
+     *             @OA\Property(property="conversations", type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id_chat", type="integer"),
+     *                     @OA\Property(property="id_user", type="string"),
+     *                     @OA\Property(property="fullname", type="string"),
+     *                     @OA\Property(property="profile_picture", type="string", nullable=true),
+     *                     @OA\Property(property="last_message", type="string"),
+     *                     @OA\Property(property="send_at", type="string", format="date-time"),
+     *                     @OA\Property(property="from_me", type="boolean")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Email belum diverifikasi"),
+     *     @OA\Response(response=500, description="Kesalahan server"),
+     * )
+     */
     public function getConversations()
     {
         try {

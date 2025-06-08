@@ -11,8 +11,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Api\RecruiterController;
-use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\RatingReviewController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\InstantMatchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,7 +73,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/postworec', [ProfileWoRecController::class, 'postworec']);
     Route::post('/putworec', [ProfileWoRecController::class, 'updateProfile']);
     Route::get('/dashboardworec', [DashboardController::class, 'DashboardWoRec']);
-    Route::get('/detailprofileworker/{id}', [DashboardController::class, 'DetailWorker']);
+    Route::get('/detailprofileworec/{id}', [DashboardController::class, 'DetailWoRec']);
 
     // ❓ Cek status email sudah terverifikasi atau belum
     Route::get('/email-status', function (Request $request) {
@@ -85,4 +86,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/chat/send', [ChatController::class, 'sendMessage']);
     Route::get('/chat/{id_user_b}', [ChatController::class, 'getMessages']);
     Route::get('/getchat', [ChatController::class, 'getConversations']);
+
+    Route::post('/review/{id_reviewed}', [RatingReviewController::class, 'kasihrating']);
+    Route::patch('/review/{id_reviewed}', [RatingReviewController::class, 'kasihrating']);
+    Route::get('/review/{id_reviewed}', [RatingReviewController::class, 'lihatrating']);
+    Route::get('/review', [RatingReviewController::class, 'lihatratingSaya']);
+
+    Route::get('/instantmatch', [InstantMatchController::class, 'getInstantMatch']);
 });

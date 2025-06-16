@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\RecruiterModel;
 use App\Models\WorkerModel;
 use App\Models\RatingReviewModel;
+use App\Models\Job_OfferModel;
 
 class DashboardController extends Controller
 {
@@ -46,7 +47,7 @@ class DashboardController extends Controller
      *     )
      * )
      */
-    public function DashboardWoRec(Request $request)
+    public function DashboardRecruiter(Request $request)
     {
         try {
             $user = auth()->user();
@@ -99,47 +100,6 @@ class DashboardController extends Controller
                         'rating' => round($rating ?? 0, 2)
                     ];
                 });
-            } else if ($user->role == 'Worker') {
-                $filters = $request->only(['family_size', 'location_address']);
-
-                // Mulai query base: hanya ambil user dengan role 'worker'
-                $query = \App\Models\RecruiterModel::with('user')
-                    ->whereHas('user', function ($q) {
-                        $q->where('role', 'recruiter');
-                    });
-
-                // Terapkan filter jika diberikan
-                if (!empty($filters['family_size'])) {
-                    $query->where('family_size', 'like', '%' . $filters['family_size'] . '%');
-                }
-
-                if (!empty($filters['location_address'])) {
-                    $query->where('location_address', 'like', '%' . $filters['location_address'] . '%');
-                }
-
-                // Ambil data
-                $recruiters = $query->inRandomOrder()->get();
-
-                // Format data untuk respons
-                $result = $recruiters->map(function ($recruiter) {
-                    $birthdate = $recruiter->user->birthdate ?? null;
-                    $umur = $birthdate ? \Carbon\Carbon::parse($birthdate)->age : "Belum ada umur";
-
-                    $rating = \App\Models\RatingReviewModel::where('id_reviewed', $recruiter->id_user)
-                        ->where('role', 'recruiter')
-                        ->avg('rating');
-
-                    return [
-                        'id_recruiter' => $recruiter->id_recruiter,
-                        'fullname' => $recruiter->user->fullname ?? '-',
-                        'location_address' => $recruiter->location_address,
-                        'umur' => $umur,
-                        'house_type' => $recruiter->house_type,
-                        'family_size' => $recruiter->family_size ?? '-',
-                        'profile_picture' => $recruiter->profile_picture ?? null,
-                        'rating' => round($rating ?? 0, 2)
-                    ];
-                });
             } else {
                 return response()->json([
                     'status' => false,
@@ -161,7 +121,77 @@ class DashboardController extends Controller
         }
     }
 
-    public function DetailWoRec($id) {
+    public function DashboardWorker() {
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found',
+                ], 404);
+            }
+
+            if (!$user->hasVerifiedEmail()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Email belum diverifikasi. Silakan verifikasi email terlebih dahulu.',
+                ], 403);
+            }
+
+            if ($user->role !== 'Worker') {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cuma worker yang bisa post job_offer'
+                ]);
+            }
+
+            $worker = \App\Models\WorkerModel::where('id_user', $user->id_user)->first();
+            if (!$worker) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Lengkapi profil worker terlebih dahulu untuk melihat job offer.',
+                ], 403);
+            }
+
+            $job = Job_OfferModel::with('recruiter')
+                    ->where('status', 'open')
+                    ->inRandomOrder()
+                    ->first(); // ambil satu job acak
+
+            if (!$job) {
+                return response()->json([
+                    'message' => 'Belum ada Job yang dipost oleh recruiter'
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'List job offer tersedia',
+                'data' => [
+                    'id_job'     => $job->id_job,
+                    'job_title'  => $job->job_title,
+                    'desc'       => $job->desc,
+                    'status'     => $job->status,
+                    'recruiter'  => [
+                        'id_recruiter' => $job->recruiter->id_recruiter ?? null,
+                        'fullname'     => $job->recruiter->fullname ?? null,
+                        'email'        => $job->recruiter->email ?? null,
+                        // tambahkan data lain sesuai kebutuhan
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function DetailWorker($id) {
         try {
             $user = auth()->user();
     

@@ -105,48 +105,58 @@ class InstantMatchController extends Controller
             ], 401);
         }
     
-        // Ambil worker acak dan include relasi user-nya
-        $worker = WorkerModel::with('user')->inRandomOrder()->first();
-    
-        if (!$worker) {
+        try {
+            $worker = WorkerModel::with('user')
+                ->whereHas('user')
+                ->inRandomOrder()
+                ->first();
+        
+            if (!$worker || !$worker->user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Worker atau user tidak ditemukan.',
+                ], 404);
+            }
+        
+            $ratingStats = RatingReviewModel::select(
+                    DB::raw('AVG(rating) as average_rating'),
+                    DB::raw('COUNT(*) as total_reviews')
+                )
+                ->where('id_reviewed', $worker->user->id_user)
+                ->first();
+        
+            return response()->json([
+                'status' => true,
+                'message' => 'Worker ditemukan secara acak!',
+                'data' => [
+                    'id_worker' => $worker->id_worker,
+                    'bio' => $worker->bio,
+                    'skill' => $worker->skill,
+                    'experience_years' => $worker->experience_years,
+                    'location' => $worker->location,
+                    'expected_salary' => $worker->expected_salary,
+                    'availability' => $worker->availability,
+                    'profile_picture' => $worker->profile_picture,
+                    'user' => [
+                        'fullname' => $worker->user->fullname,
+                        'email' => $worker->user->email,
+                        'phone' => $worker->user->phone,
+                        'gender' => $worker->user->gender,
+                        'age' => $worker->user->age,
+                    ],
+                    'rating' => [
+                        'average' => round($ratingStats->average_rating, 1),
+                        'total_reviews' => $ratingStats->total_reviews
+                    ]
+                ]
+            ]);
+        
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Belum ada worker yang tersedia.',
-            ], 404);
+                'message' => 'Terjadi kesalahan saat mengambil worker.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-    
-        // Ambil data rating dari tabel RatingReviewModel
-        $ratingStats = RatingReviewModel::select(
-                DB::raw('AVG(rating) as average_rating'),
-                DB::raw('COUNT(*) as total_reviews')
-            )
-            ->where('id_reviewed', $worker->user->id_user)
-            ->first();
-    
-        return response()->json([
-            'status' => true,
-            'message' => 'Worker ditemukan secara acak!',
-            'data' => [
-                'id_worker' => $worker->id_worker,
-                'bio' => $worker->bio,
-                'skill' => $worker->skill,
-                'experience_years' => $worker->experience_years,
-                'location' => $worker->location,
-                'expected_salary' => $worker->expected_salary,
-                'availability' => $worker->availability,
-                'profile_picture' => $worker->profile_picture,
-                'user' => [
-                    'fullname' => $worker->user->fullname,
-                    'email' => $worker->user->email,
-                    'phone' => $worker->user->phone,
-                    'gender' => $worker->user->gender,
-                    'age' => $worker->user->age,
-                ],
-                'rating' => [
-                    'average' => round($ratingStats->average_rating, 1),
-                    'total_reviews' => $ratingStats->total_reviews
-                ]
-            ]
-        ]);
     }
 }

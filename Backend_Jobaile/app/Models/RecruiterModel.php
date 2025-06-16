@@ -14,6 +14,7 @@ class RecruiterModel extends Model
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $primaryKey = 'id_recruiter';
+    protected $foreignKey = 'id_user';
 
     public $incrementing = false; 
 

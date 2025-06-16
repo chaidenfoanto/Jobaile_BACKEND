@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->text('terms');
+            $table->enum('status_pay', ['pending', 'success'])->default('pending');
             $table->timestamp('sign_at')->useCurrent();
             $table->timestamps();
 

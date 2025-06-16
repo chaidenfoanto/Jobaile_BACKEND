@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chat_models', function (Blueprint $table) {
-            $table->id('id_chat');
+            $table->id('id_chat')->primary();
             $table->string('id_sender', 20);
             $table->string('id_receiver', 20);
             $table->text('message');

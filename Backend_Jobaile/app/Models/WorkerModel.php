@@ -14,6 +14,7 @@ class WorkerModel extends Model
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $primaryKey = 'id_worker';
+    protected $foreignKey = 'id_user';
 
     public $incrementing = false; 
 

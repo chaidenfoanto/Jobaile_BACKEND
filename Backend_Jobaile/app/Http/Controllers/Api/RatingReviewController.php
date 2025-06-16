@@ -67,18 +67,17 @@ class RatingReviewController extends Controller
         }
 
         // Simpan atau perbarui rating
-        $rating = RatingReviewModel::updateOrCreate(
-            [
-                'id_reviewer' => $idReviewer,
-                'id_reviewed' => $id_reviewed,
-            ],
-            [
-                'rating' => $request->rating,
-                'ulasan' => $request->ulasan,
-                'tanggal_rating' => now(),
-                'role' => strtolower($user->role),
-            ]
-        );
+        $rating = RatingReviewModel::firstOrNew([
+            'id_reviewer' => $idReviewer,
+            'id_reviewed' => $id_reviewed,
+        ]);
+        
+        $rating->rating = $request->rating;
+        $rating->ulasan = $request->ulasan;
+        $rating->tanggal_rating = now();
+        $rating->role = strtolower($user->role);
+        $rating->save();
+        
 
         return response()->json([
             'status' => true,

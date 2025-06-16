@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5fb2e735ecb2393651e288dc80709830",
+    "content-hash": "fc4d240e0aafc2236bb4c0d1b1f737e6",
     "packages": [
         {
             "name": "brick/math",
@@ -2987,6 +2987,61 @@
                 }
             ],
             "time": "2025-05-08T08:14:37+00:00"
+        },
+        {
+            "name": "otnansirk/laravel-dana",
+            "version": "v2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/otnansirk/laravel-dana.git",
+                "reference": "ab7cd3de35f843659a55ff6c702ef41fef53fb10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/otnansirk/laravel-dana/zipball/ab7cd3de35f843659a55ff6c702ef41fef53fb10",
+                "reference": "ab7cd3de35f843659a55ff6c702ef41fef53fb10",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^9.19 || ^10.0 || ^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Otnansirk\\Dana\\DanaCoreServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Otnansirk\\Dana\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "otnansirk",
+                    "email": "iam.otnansirk@gmail.com"
+                }
+            ],
+            "description": "This Laravel wrapper for DANA Payment API",
+            "keywords": [
+                "DANA Laravel",
+                "dana payment gateway",
+                "laravel-DANA",
+                "otnansirk",
+                "payment",
+                "payment gateway"
+            ],
+            "support": {
+                "issues": "https://github.com/otnansirk/laravel-dana/issues",
+                "source": "https://github.com/otnansirk/laravel-dana"
+            },
+            "time": "2024-08-07T04:26:01+00:00"
         },
         {
             "name": "paragonie/sodium_compat",

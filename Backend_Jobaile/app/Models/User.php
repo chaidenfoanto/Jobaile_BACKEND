@@ -88,7 +88,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function workerProfile()
     {
-        return $this->hasOne(WorkerProfile::class, 'id_user', 'id_user');
+        return $this->hasOne(WorkerModel::class, 'id_user', 'id_user');
     }
 
     /**
@@ -96,7 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function recruiterProfile()
     {
-        return $this->hasOne(RecruiterProfile::class, 'id_user', 'id_user');
+        return $this->hasOne(RecruiterModel::class, 'id_user', 'id_user');
     }
 
     /**

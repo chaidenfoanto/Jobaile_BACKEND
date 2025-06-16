@@ -14,6 +14,10 @@ use App\Http\Controllers\Api\RecruiterController;
 use App\Http\Controllers\Api\RatingReviewController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\InstantMatchController;
+use App\Http\Controllers\Api\Job_OfferController;
+use App\Http\Controllers\Api\MatchmakingController;
+use App\Http\Controllers\Api\ContractController;
+use App\Http\Controllers\Api\DanaPaymentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,13 +71,25 @@ Route::post('/email/verification-notification', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/test-relasi', function () {
+        $user = \App\Models\User::with('recruiterProfile')->where('id_user', 'h0YcaSIsAxXi2dvEgxqy')->first();
+        return $user->recruiterProfile;
+    });
+    
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::get('/profile', [Profilecontroller::class, 'getProfile']);
-    Route::post('/postworec', [ProfileWoRecController::class, 'postworec']);
-    Route::post('/putworec', [ProfileWoRecController::class, 'updateProfile']);
-    Route::get('/dashboardworec', [DashboardController::class, 'DashboardWoRec']);
-    Route::get('/detailprofileworec/{id}', [DashboardController::class, 'DetailWoRec']);
+    Route::get('/profile', [Profilecontroller::class, 'getProfile']); //sdh
+    Route::post('/postworec', [ProfileWoRecController::class, 'postworec']); //sdh
+    Route::post('/putworec', [ProfileWoRecController::class, 'updateProfile']); //sdh
+    Route::get('/dashboardrecruiter', [DashboardController::class, 'DashboardRecruiter']); //sdh
+    Route::get('/detailprofileworec/{id}', [DashboardController::class, 'DetailWorker']); //sdh
+
+    Route::get('/dashboardworker', [DashboardController::class, 'DashboardWorker']); 
+    Route::get('/dashboardofferrecruiter/{id}', [Job_OfferController::class, 'DetailOffer']); //sdh
+
+    Route::post('/job_offer', [Job_OfferController::class, 'PostJob_Offer']); //sdh
+    Route::put('/job_offer/{id}', [Job_OfferController::class, 'PutJob_Offer']); //sdh
+    // Route::delete('/job_offer/{id}', [Job_OfferController::class, 'DeleteJob_Offer']); //kalau perlu saja
 
     // ❓ Cek status email sudah terverifikasi atau belum
     Route::get('/email-status', function (Request $request) {
@@ -82,15 +98,25 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         ]);
     });
 
-    Route::get('/searchworker', [RecruiterController::class, 'search']);
-    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
-    Route::get('/chat/{id_user_b}', [ChatController::class, 'getMessages']);
-    Route::get('/getchat', [ChatController::class, 'getConversations']);
+    Route::post('/accbyworker/{id}', [MatchmakingController::class, 'Jobofferaccbyworker']); //sdh
+    Route::post('/match/tolak/{id_job}', [MatchmakingController::class, 'TolakMatch']); //sdh
+    Route::post('/matchaccbyrecruiterorrequestbyrecruiter/{id_job}', [MatchmakingController::class, 'Matchmakingaccbyrecruiter']); //sdh
 
-    Route::post('/review/{id_reviewed}', [RatingReviewController::class, 'kasihrating']);
-    Route::patch('/review/{id_reviewed}', [RatingReviewController::class, 'kasihrating']);
-    Route::get('/review/{id_reviewed}', [RatingReviewController::class, 'lihatrating']);
-    Route::get('/review', [RatingReviewController::class, 'lihatratingSaya']);
+    Route::get('/searchworker', [RecruiterController::class, 'search']); //sdh
+    Route::post('/chat/send/{id_receiver}', [ChatController::class, 'sendMessage']); //sdh
+    Route::get('/chat/{id_user_b}', [ChatController::class, 'getMessages']); // ini yg dalam chat 
+    Route::get('/getchat', [ChatController::class, 'getConversations']); // ini diluarnya
 
-    Route::get('/instantmatch', [InstantMatchController::class, 'getInstantMatch']);
+    Route::post('/review/{id_reviewed}', [RatingReviewController::class, 'kasihrating']); // sdh
+    Route::patch('/review/{id_reviewed}', [RatingReviewController::class, 'kasihrating']); // sdh 
+    Route::get('/review/{id_reviewed}', [RatingReviewController::class, 'lihatrating']); // sddh 
+    Route::get('/review', [RatingReviewController::class, 'lihatratingSaya']); // sdh
+
+    Route::get('/instantmatch', [InstantMatchController::class, 'getInstantMatch']); // sdh
+
+    Route::post('/contracts/{id}', [ContractController::class, 'ContractController']); // sdh
+
+    Route::post('/payments/qr/{contractId}', [DanaPaymentsController::class, 'createQrPayment']); // sdh
 });
+
+Route::post('/payments/callback', [DanaPaymentsController::class, 'handleCallback']);//sdh

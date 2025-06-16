@@ -48,33 +48,74 @@ class Profilecontroller extends Controller
      * )
      */
 
-    public function getProfile()
-    {
-        $user = auth()->user();
-
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User tidak terautentikasi.',
-            ], 401);
-        }
-
-        if (!$user->hasVerifiedEmail()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Email not verified. Please verify your email first.',
-            ], 403);
-        }
-
-        return response()->json([
-            'status' => true,
-            'message' => 'user found successfully',
-            'id_user' => $user->id_user,
-            'fullname' => $user->fullname,
-            'email' => $user->email,
-            'phone' => $user->phone
-        ], 200);
-    }
-
-    
+     public function getProfile()
+     {
+         $user = auth()->user();
+     
+         if (!$user) {
+             return response()->json([
+                 'status' => 'error',
+                 'message' => 'User tidak terautentikasi.',
+             ], 401);
+         }
+     
+         if (!$user->hasVerifiedEmail()) {
+             return response()->json([
+                 'status' => false,
+                 'message' => 'Email not verified. Please verify your email first.',
+             ], 403);
+         }
+     
+         if ($user->role === 'Worker') {
+             $worker = \App\Models\WorkerModel::with('user')
+                 ->where('id_user', $user->id_user)
+                 ->whereHas('user', function ($q) {
+                     $q->where('role', 'worker');
+                 })
+                 ->first();
+     
+             return response()->json([
+                 'status' => true,
+                 'message' => 'Worker profile ditemukan.',
+                 'id_user' => $user->id_user,
+                 'fullname' => $user->fullname,
+                 'email' => $user->email,
+                 'phone' => $user->phone,
+                 'gender' => $user->gender,
+                 'birthdate' => $user->birthdate,
+                 'photo' => $worker && $worker->profile_picture
+                     ? asset('storage/profile/' . $worker->profile_picture)
+                     : null
+             ]);
+         }
+     
+         if ($user->role === 'Recruiter') {
+             $recruiter = \App\Models\RecruiterModel::with('user')
+                 ->where('id_user', $user->id_user)
+                 ->whereHas('user', function ($q) {
+                     $q->where('role', 'recruiter');
+                 })
+                 ->first();
+     
+             return response()->json([
+                 'status' => true,
+                 'message' => 'Recruiter profile ditemukan.',
+                 'id_user' => $user->id_user,
+                 'fullname' => $user->fullname,
+                 'email' => $user->email,
+                 'phone' => $user->phone,
+                 'gender' => $user->gender,
+                 'birthdate' => $user->birthdate,
+                 'photo' => $recruiter && $recruiter->profile_picture
+                     ? asset('storage/profile/' . $recruiter->profile_picture)
+                     : null
+             ]);
+         }
+     
+         return response()->json([
+             'status' => false,
+             'message' => 'Role tidak valid.',
+         ], 400);
+     }
+     
 }

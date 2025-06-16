@@ -17,6 +17,7 @@ class RatingReviewModel extends Model
 
     public $incrementing = false; // Karena bukan auto-increment
     public $timestamps = false;   // Kalau tidak pakai created_at dan updated_at
+    protected $primaryKey = null;
     
     protected $fillable = [
         'id_reviewer',

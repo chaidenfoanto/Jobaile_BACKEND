@@ -10,7 +10,7 @@ class MatchmakingModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'matchmakings';
+    protected $table = 'matchmaking_models';
 
     protected $primaryKey = 'id_match';
 

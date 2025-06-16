@@ -25,6 +25,7 @@ class ContractsModel extends Model
         'end_date',
         'terms',
         'sign_at',
+        'status_pay'
     ];
 
     protected $dates = ['start_date', 'end_date', 'sign_at'];
@@ -42,5 +43,10 @@ class ContractsModel extends Model
     public function job()
     {
         return $this->belongsTo(Job_OfferModel::class, 'id_job', 'id_job');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(DanaModel::class, 'id_contract', 'id_contract');
     }
 }

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('id_recruiter', 20);
             $table->unsignedBigInteger('id_job');
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+            $table->enum('status_worker', ['pending', 'accepted', 'rejected'])->default('pending');
+            $table->enum('status_recruiter', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->timestamp('matched_at')->useCurrent();
             $table->timestamps();
 

@@ -13,40 +13,37 @@ use App\Models\Job_OfferModel;
 class DashboardController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/dashboardworec",
-     *     summary="Menampilkan dashboard recruiter berisi daftar ART (worker)",
-     *     tags={"Dashboard"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Daftar ART berhasil diambil",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Worker found successfully"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     @OA\Property(property="id_worker", type="integer", example=1),
-     *                     @OA\Property(property="bio", type="string", example="Saya ART berpengalaman..."),
-     *                     @OA\Property(property="umur", type="integer", example=25),
-     *                     @OA\Property(property="fullname", type="string", example="Siti Aminah"),
-     *                     @OA\Property(property="profile_picture", type="string", example="siti.png")
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="User not found"
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Terjadi error saat mengambil data"
-     *     )
-     * )
-     */
+ * @OA\Get(
+ *     path="/api/dashboardrecruiter",
+ *     summary="Menampilkan daftar ART (worker) untuk recruiter",
+ *     tags={"Dashboard"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Daftar worker berhasil diambil",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="User ditemukan"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="id_worker", type="integer", example=1),
+ *                     @OA\Property(property="fullname", type="string", example="Siti Aminah"),
+ *                     @OA\Property(property="bio", type="string", example="Saya ART berpengalaman"),
+ *                     @OA\Property(property="umur", type="integer", example=25),
+ *                     @OA\Property(property="location", type="string", example="Makassar"),
+ *                     @OA\Property(property="profile_picture", type="string", example="foto.png"),
+ *                     @OA\Property(property="rating", type="number", format="float", example=4.7)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=403, description="Role tidak dikenali"),
+ *     @OA\Response(response=404, description="User not found"),
+ *     @OA\Response(response=500, description="Terjadi kesalahan")
+ * )
+ */
     public function DashboardRecruiter(Request $request)
     {
         try {
@@ -121,6 +118,42 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+ * @OA\Get(
+ *     path="/api/dashboardworker",
+ *     summary="Menampilkan 1 job offer acak kepada worker",
+ *     tags={"Dashboard"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Job offer tersedia",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="List job offer tersedia"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(property="id_job", type="string", example="job123"),
+ *                 @OA\Property(property="job_title", type="string", example="Bersih-bersih rumah"),
+ *                 @OA\Property(property="desc", type="string", example="Pekerjaan mingguan membersihkan rumah..."),
+ *                 @OA\Property(property="status", type="string", example="open"),
+ *                 @OA\Property(
+ *                     property="recruiter",
+ *                     type="object",
+ *                     @OA\Property(property="id_recruiter", type="string", example="rec123"),
+ *                     @OA\Property(property="fullname", type="string", example="Bu Rina"),
+ *                     @OA\Property(property="email", type="string", example="rina@example.com")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=403, description="Email belum diverifikasi / bukan worker"),
+ *     @OA\Response(response=404, description="User tidak ditemukan"),
+ *     @OA\Response(response=500, description="Terjadi kesalahan")
+ * )
+ */
+
+
     public function DashboardWorker() {
         try {
             $user = auth()->user();
@@ -190,6 +223,36 @@ class DashboardController extends Controller
             ], 500);
         }
     }
+
+    /**
+ * @OA\Get(
+ *     path="/api/detailprofileworec/{id}",
+ *     summary="Menampilkan detail profile Worker (jika user recruiter) atau Recruiter (jika user worker)",
+ *     tags={"Dashboard"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID Worker atau Recruiter",
+ *         required=true,
+ *         @OA\Schema(type="integer", example=2)
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Data ditemukan",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Detail worker found successfully"),
+ *             @OA\Property(property="data", type="object")
+ *         )
+ *     ),
+ *     @OA\Response(response=401, description="Belum login"),
+ *     @OA\Response(response=403, description="Email belum diverifikasi / role tidak valid"),
+ *     @OA\Response(response=404, description="Worker atau Recruiter tidak ditemukan"),
+ *     @OA\Response(response=500, description="Terjadi kesalahan")
+ * )
+ */
+
 
     public function DetailWorker($id) {
         try {

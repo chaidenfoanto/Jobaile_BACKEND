@@ -11,6 +11,53 @@ use Illuminate\Validation\Rule;
 
 class RecruiterController extends Controller
 {
+    /**
+ * @OA\Get(
+ *     path="/api/searchworker",
+ *     summary="Cari worker berdasarkan keyword",
+ *     tags={"Recruiter"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="keyword",
+ *         in="query",
+ *         description="Kata kunci minimal 3 karakter untuk mencari worker berdasarkan fullname, bio, skill, atau lokasi",
+ *         required=true,
+ *         @OA\Schema(type="string", example="las listrik")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Worker ditemukan",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Worker ditemukan"),
+ *             @OA\Property(property="data", type="array", @OA\Items(
+ *                 @OA\Property(property="id_worker", type="string", example="WKR123"),
+ *                 @OA\Property(property="id_user", type="string", example="USR123"),
+ *                 @OA\Property(property="fullname", type="string", example="Andi Tukang"),
+ *                 @OA\Property(property="bio", type="string", example="Berpengalaman 5 tahun di bidang AC"),
+ *                 @OA\Property(property="skill", type="string", example="AC, listrik, las"),
+ *                 @OA\Property(property="location", type="string", example="Makassar"),
+ *                 @OA\Property(property="expected_salary", type="integer", example=3000000),
+ *                 @OA\Property(property="availability", type="string", example="full-time"),
+ *                 @OA\Property(property="profile_picture", type="string", example="http://localhost/storage/profile.jpg"),
+ *                 @OA\Property(property="rating", type="number", format="float", example=4.75)
+ *             ))
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Keyword tidak valid",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Keyword pencarian harus minimal 3 karakter")
+ *         )
+ *     ),
+ *     @OA\Response(response=401, description="Belum login"),
+ *     @OA\Response(response=403, description="Email belum diverifikasi"),
+ *     @OA\Response(response=500, description="Terjadi kesalahan server"),
+ * )
+ */
+
     public function search(Request $request)
     {
         try {

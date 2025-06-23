@@ -16,79 +16,6 @@
         }
     ],
     "paths": {
-        "/api/registerrecruiter": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Registrasi akun untuk recruiter",
-                "operationId": "c39714188d4f505a710e82e8ca9e2aff",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "fullname",
-                                    "email",
-                                    "password",
-                                    "phone",
-                                    "gender",
-                                    "birthdate",
-                                    "ktp_card_path"
-                                ],
-                                "properties": {
-                                    "fullname": {
-                                        "type": "string",
-                                        "maxLength": 50
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password"
-                                    },
-                                    "phone": {
-                                        "type": "string",
-                                        "maxLength": 15,
-                                        "minLength": 10
-                                    },
-                                    "gender": {
-                                        "type": "string",
-                                        "enum": [
-                                            "Male",
-                                            "Female"
-                                        ]
-                                    },
-                                    "birthdate": {
-                                        "type": "string",
-                                        "format": "date"
-                                    },
-                                    "ktp_card_path": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "User berhasil didaftarkan"
-                    },
-                    "422": {
-                        "description": "Validasi gagal"
-                    },
-                    "500": {
-                        "description": "Kesalahan server"
-                    }
-                }
-            }
-        },
         "/api/registerworker": {
             "post": {
                 "tags": [
@@ -234,51 +161,275 @@
                 ]
             }
         },
-        "/api/dashboardworec": {
-            "get": {
+        "/api/chat/send/{id_receiver}": {
+            "post": {
                 "tags": [
-                    "Dashboard"
+                    "Chat"
                 ],
-                "summary": "Menampilkan dashboard recruiter berisi daftar ART (worker)",
-                "operationId": "6b71af0875683670c67fd72817a0b8da",
+                "summary": "Kirim pesan dari user yang login ke user lain",
+                "operationId": "7ad7304734a896ff60c3be5f1b1bf975",
+                "parameters": [
+                    {
+                        "name": "id_receiver",
+                        "in": "path",
+                        "description": "ID user penerima pesan",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "description": "Isi pesan yang dikirim",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "Daftar ART berhasil diambil",
+                        "description": "Pesan berhasil dikirim",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pesan terkirim."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id_chat": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "id_sender": {
+                                                    "type": "string",
+                                                    "example": "USR123"
+                                                },
+                                                "id_receiver": {
+                                                    "type": "string",
+                                                    "example": "USR456"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Halo!"
+                                                },
+                                                "send_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-11T15:04:05Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi atau role tidak sesuai",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Email belum diverifikasi."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi input gagal",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The message field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/chat/{id_user_b}": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Ambil riwayat pesan antara user login dan user lain",
+                "operationId": "0644273ea7626ee41c9bb4821252a7d1",
+                "parameters": [
+                    {
+                        "name": "id_user_b",
+                        "in": "path",
+                        "description": "ID user yang akan diambil riwayat pesannya",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil pesan",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "status": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Worker found successfully"
+                                            "type": "boolean"
                                         },
                                         "data": {
+                                            "properties": {
+                                                "fullname": {
+                                                    "type": "string"
+                                                },
+                                                "profile_picture": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "messages": {
+                                            "properties": {
+                                                "chats": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id_chat": {
+                                                                "type": "integer"
+                                                            },
+                                                            "id_sender": {
+                                                                "type": "string"
+                                                            },
+                                                            "id_receiver": {
+                                                                "type": "string"
+                                                            },
+                                                            "message": {
+                                                                "type": "string"
+                                                            },
+                                                            "send_at": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "send_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi atau role sama"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/getchat": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Ambil daftar percakapan terakhir user yang login",
+                "operationId": "40eeef91fef92d63eb7e9fc040c4fcf3",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil daftar percakapan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean"
+                                        },
+                                        "conversations": {
                                             "type": "array",
                                             "items": {
                                                 "properties": {
-                                                    "id_worker": {
-                                                        "type": "integer",
-                                                        "example": 1
+                                                    "id_chat": {
+                                                        "type": "integer"
                                                     },
-                                                    "bio": {
-                                                        "type": "string",
-                                                        "example": "Saya ART berpengalaman..."
-                                                    },
-                                                    "umur": {
-                                                        "type": "integer",
-                                                        "example": 25
+                                                    "id_user": {
+                                                        "type": "string"
                                                     },
                                                     "fullname": {
-                                                        "type": "string",
-                                                        "example": "Siti Aminah"
+                                                        "type": "string"
                                                     },
                                                     "profile_picture": {
                                                         "type": "string",
-                                                        "example": "siti.png"
+                                                        "nullable": true
+                                                    },
+                                                    "last_message": {
+                                                        "type": "string"
+                                                    },
+                                                    "send_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "from_me": {
+                                                        "type": "boolean"
                                                     }
                                                 },
                                                 "type": "object"
@@ -290,11 +441,986 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contracts/{id}": {
+            "post": {
+                "tags": [
+                    "Contract"
+                ],
+                "summary": "Recruiter membuat kontrak kerja dengan worker",
+                "operationId": "25e02c2ca7bd67c5e8e4389ac3875806",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID dari worker yang akan dikontrak",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_job",
+                                    "start_date",
+                                    "end_date",
+                                    "terms"
+                                ],
+                                "properties": {
+                                    "id_job": {
+                                        "type": "string",
+                                        "example": "job123"
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-07-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-07-10"
+                                    },
+                                    "terms": {
+                                        "type": "string",
+                                        "example": "Kontrak berlaku 10 hari dan dapat diperpanjang."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kontrak berhasil dibuat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Kontrak berhasil dibuat."
+                                        },
+                                        "kontrak": {
+                                            "properties": {
+                                                "id_worker": {
+                                                    "type": "string",
+                                                    "example": "worker123"
+                                                },
+                                                "id_recruiter": {
+                                                    "type": "string",
+                                                    "example": "recruiter123"
+                                                },
+                                                "id_job": {
+                                                    "type": "string",
+                                                    "example": "job123"
+                                                },
+                                                "start_date": {
+                                                    "type": "string",
+                                                    "example": "2025-07-01"
+                                                },
+                                                "end_date": {
+                                                    "type": "string",
+                                                    "example": "2025-07-10"
+                                                },
+                                                "status_pay": {
+                                                    "type": "string",
+                                                    "example": "pending"
+                                                },
+                                                "terms": {
+                                                    "type": "string",
+                                                    "example": "Detail syarat dan ketentuan"
+                                                },
+                                                "sign_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-06-23T12:00:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User belum terautentikasi"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi atau bukan recruiter"
+                    },
+                    "404": {
+                        "description": "Profil recruiter tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal (format atau data tidak sesuai)"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/payments/qr/{contractId}": {
+            "post": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Generate QR Payment untuk kontrak",
+                "description": "`* @OA\\Post(\n    path=\"/api/payments/qr/{contractId}\",\n    summary=\"Generate QR Payment untuk kontrak\",\n    tags={\"Payment\"},\n    security={{\"sanctum\":{}}},",
+                "operationId": "0990b4e8366d461779f38b91333a5947",
+                "parameters": [
+                    {
+                        "name": "contractId",
+                        "in": "path",
+                        "description": "ID dari kontrak",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "QR code berhasil dibuat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "QR code berhasil dibuat."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "qr_code_url": {
+                                                    "type": "string",
+                                                    "example": "https://dummy.dana.qr/scan/JOB-uuid123"
+                                                },
+                                                "payment_id": {
+                                                    "type": "integer",
+                                                    "example": 101
+                                                },
+                                                "merchant_trans_id": {
+                                                    "type": "string",
+                                                    "example": "JOB-uuid123"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "waiting_for_payment"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User belum terautentikasi"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi atau bukan recruiter"
+                    },
+                    "404": {
+                        "description": "Kontrak tidak ditemukan"
+                    },
+                    "400": {
+                        "description": "Kontrak sudah dibayar"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/payments/callback": {
+            "post": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Callback DANA untuk update status pembayaran",
+                "operationId": "2e7a00bb7d2efc05e03867b2cc5b135e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "merchantTransId",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "merchantTransId": {
+                                        "type": "string",
+                                        "example": "JOB-uuid123"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "success",
+                                            "failed",
+                                            "pending"
+                                        ],
+                                        "example": "success"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status pembayaran diperbarui"
+                    },
+                    "404": {
+                        "description": "Pembayaran tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/dashboardrecruiter": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Menampilkan daftar ART (worker) untuk recruiter",
+                "operationId": "0dda996421c557f8dbcc1b2db63b5da6",
+                "responses": {
+                    "200": {
+                        "description": "Daftar worker berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User ditemukan"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id_worker": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "fullname": {
+                                                        "type": "string",
+                                                        "example": "Siti Aminah"
+                                                    },
+                                                    "bio": {
+                                                        "type": "string",
+                                                        "example": "Saya ART berpengalaman"
+                                                    },
+                                                    "umur": {
+                                                        "type": "integer",
+                                                        "example": 25
+                                                    },
+                                                    "location": {
+                                                        "type": "string",
+                                                        "example": "Makassar"
+                                                    },
+                                                    "profile_picture": {
+                                                        "type": "string",
+                                                        "example": "foto.png"
+                                                    },
+                                                    "rating": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 4.7
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Role tidak dikenali"
+                    },
                     "404": {
                         "description": "User not found"
                     },
                     "500": {
-                        "description": "Terjadi error saat mengambil data"
+                        "description": "Terjadi kesalahan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboardworker": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Menampilkan 1 job offer acak kepada worker",
+                "operationId": "e4696810d5325e174b6e2228e2b4aa14",
+                "responses": {
+                    "200": {
+                        "description": "Job offer tersedia",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "List job offer tersedia"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id_job": {
+                                                    "type": "string",
+                                                    "example": "job123"
+                                                },
+                                                "job_title": {
+                                                    "type": "string",
+                                                    "example": "Bersih-bersih rumah"
+                                                },
+                                                "desc": {
+                                                    "type": "string",
+                                                    "example": "Pekerjaan mingguan membersihkan rumah..."
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "open"
+                                                },
+                                                "recruiter": {
+                                                    "properties": {
+                                                        "id_recruiter": {
+                                                            "type": "string",
+                                                            "example": "rec123"
+                                                        },
+                                                        "fullname": {
+                                                            "type": "string",
+                                                            "example": "Bu Rina"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "rina@example.com"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi / bukan worker"
+                    },
+                    "404": {
+                        "description": "User tidak ditemukan"
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/detailprofileworec/{id}": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Menampilkan detail profile Worker (jika user recruiter) atau Recruiter (jika user worker)",
+                "operationId": "b7520210349816ebfe21cceb6cfc0a22",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID Worker atau Recruiter",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Detail worker found successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Belum login"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi / role tidak valid"
+                    },
+                    "404": {
+                        "description": "Worker atau Recruiter tidak ditemukan"
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/instantmatch": {
+            "get": {
+                "tags": [
+                    "Instant Match"
+                ],
+                "summary": "Ambil worker secara acak untuk recruiter",
+                "operationId": "bfb2a91f78a0dd05067f1def239f58a7",
+                "responses": {
+                    "200": {
+                        "description": "Worker berhasil ditemukan secara acak",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Worker ditemukan secara acak!"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id_worker": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "bio": {
+                                                    "type": "string",
+                                                    "example": "Tukang AC berpengalaman 5 tahun."
+                                                },
+                                                "skill": {
+                                                    "type": "string",
+                                                    "example": "AC Service, Las, Plumbing"
+                                                },
+                                                "experience_years": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "location": {
+                                                    "type": "string",
+                                                    "example": "Jakarta"
+                                                },
+                                                "expected_salary": {
+                                                    "type": "integer",
+                                                    "example": 5000000
+                                                },
+                                                "availability": {
+                                                    "type": "string",
+                                                    "example": "Full-time"
+                                                },
+                                                "profile_picture": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/images/profile.jpg"
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "fullname": {
+                                                            "type": "string",
+                                                            "example": "Budi Santoso"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "format": "email",
+                                                            "example": "budi@example.com"
+                                                        },
+                                                        "phone": {
+                                                            "type": "string",
+                                                            "example": "081234567890"
+                                                        },
+                                                        "gender": {
+                                                            "type": "string",
+                                                            "example": "Male"
+                                                        },
+                                                        "age": {
+                                                            "type": "integer",
+                                                            "example": 30
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "rating": {
+                                                    "properties": {
+                                                        "average": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 4.5
+                                                        },
+                                                        "total_reviews": {
+                                                            "type": "integer",
+                                                            "example": 12
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Bukan recruiter atau user belum login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Instant match hanya untuk recruiter"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Email belum diverifikasi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email belum diverifikasi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tidak ada worker yang tersedia",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Belum ada worker yang tersedia."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/job_offer": {
+            "post": {
+                "tags": [
+                    "Job Offer"
+                ],
+                "summary": "Recruiter membuat job offer baru",
+                "operationId": "5894c1666468ba388e17801fcddb015c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "job_title",
+                                    "desc"
+                                ],
+                                "properties": {
+                                    "job_title": {
+                                        "type": "string",
+                                        "example": "Asisten Rumah Tangga"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Bersih-bersih dan masak setiap hari."
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "open",
+                                            "closed"
+                                        ],
+                                        "example": "open"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Job offer berhasil dibuat"
+                    },
+                    "401": {
+                        "description": "Unauthorized / belum login"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi / bukan recruiter"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    },
+                    "500": {
+                        "description": "Kesalahan server"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/job_offer/{id}": {
+            "put": {
+                "tags": [
+                    "Job Offer"
+                ],
+                "summary": "Recruiter memperbarui job offer miliknya",
+                "operationId": "82d814cff3a57411fd626a9ab6f8dce3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID job offer yang ingin diupdate",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "job_title": {
+                                        "type": "string",
+                                        "example": "ART Harian"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "3x seminggu, bantu cuci dan setrika"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "open",
+                                            "closed"
+                                        ],
+                                        "example": "closed"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Job offer berhasil diperbarui"
+                    },
+                    "401": {
+                        "description": "Belum login"
+                    },
+                    "403": {
+                        "description": "Bukan recruiter / belum verifikasi email"
+                    },
+                    "404": {
+                        "description": "Job offer tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboardofferrecruiter/{id}": {
+            "get": {
+                "tags": [
+                    "Job Offer"
+                ],
+                "summary": "Worker melihat detail job offer dari recruiter",
+                "operationId": "12fd7887761eb163dfb6dbb449acba73",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID dari job offer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail job offer ditemukan"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi / bukan worker"
+                    },
+                    "404": {
+                        "description": "Job offer tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/accbyworker/{id}": {
+            "post": {
+                "tags": [
+                    "Matchmaking"
+                ],
+                "summary": "Worker menerima job offer",
+                "operationId": "2430edfab180d7770301c11555413937",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID job offer yang ingin diterima",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job offer diterima, menunggu konfirmasi recruiter"
+                    },
+                    "401": {
+                        "description": "Belum login / email belum diverifikasi"
+                    },
+                    "403": {
+                        "description": "Hanya worker yang dapat menerima job"
+                    },
+                    "404": {
+                        "description": "Job offer tidak valid atau sudah ditutup"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/matchaccbyrecruiterorrequestbyrecruiter/{id_job}": {
+            "post": {
+                "tags": [
+                    "Matchmaking"
+                ],
+                "summary": "Recruiter mengirimkan tawaran ke worker",
+                "operationId": "dc84691027675985c6e9f9b5c2a89ae7",
+                "parameters": [
+                    {
+                        "name": "id_job",
+                        "in": "path",
+                        "description": "ID dari job offer yang ingin ditawarkan",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_worker"
+                                ],
+                                "properties": {
+                                    "id_worker": {
+                                        "type": "integer",
+                                        "example": 12
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tawaran berhasil dikirim ke worker"
+                    },
+                    "401": {
+                        "description": "Unauthorized atau email belum diverifikasi"
+                    },
+                    "403": {
+                        "description": "Bukan recruiter"
+                    },
+                    "404": {
+                        "description": "Job offer tidak ditemukan atau bukan milik recruiter"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/match/tolak/{id_job}": {
+            "post": {
+                "tags": [
+                    "Matchmaking"
+                ],
+                "summary": "Tolak tawaran/match oleh worker atau recruiter",
+                "operationId": "904ce6f8518b97a7628002ec15f7347f",
+                "parameters": [
+                    {
+                        "name": "id_job",
+                        "in": "path",
+                        "description": "ID job offer yang ingin ditolak",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Match berhasil ditolak dan dihapus"
+                    },
+                    "401": {
+                        "description": "Belum login atau email belum diverifikasi"
+                    },
+                    "404": {
+                        "description": "Match tidak ditemukan"
                     }
                 },
                 "security": [
@@ -556,13 +1682,13 @@
         "/api/profile": {
             "get": {
                 "tags": [
-                    "Profile"
+                    "Profile Worker Recruiter"
                 ],
-                "summary": "Get authenticated user profile",
+                "summary": "Ambil profil user yang sedang login (worker atau recruiter)",
                 "operationId": "32615b9ff077fbd3362b8c321e4dac8d",
                 "responses": {
                     "200": {
-                        "description": "Successful response",
+                        "description": "Profil ditemukan",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -573,37 +1699,37 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "tukang found successfully"
+                                            "example": "Worker profile ditemukan."
                                         },
-                                        "data": {
-                                            "properties": {
-                                                "id_user": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "fullname": {
-                                                    "type": "string",
-                                                    "example": "John Doe"
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "example": "johndoe@example.com"
-                                                },
-                                                "phone": {
-                                                    "type": "string",
-                                                    "example": "08123456789"
-                                                },
-                                                "gender": {
-                                                    "type": "string",
-                                                    "example": "male"
-                                                },
-                                                "birthdate": {
-                                                    "type": "string",
-                                                    "format": "date",
-                                                    "example": "2000-01-01"
-                                                }
-                                            },
-                                            "type": "object"
+                                        "id_user": {
+                                            "type": "string",
+                                            "example": "u5Xd33W..."
+                                        },
+                                        "fullname": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "john@example.com"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "081234567890"
+                                        },
+                                        "gender": {
+                                            "type": "string",
+                                            "example": "male"
+                                        },
+                                        "birthdate": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "1990-01-01"
+                                        },
+                                        "photo": {
+                                            "type": "string",
+                                            "format": "url",
+                                            "example": "https://yourapp.com/storage/profile/image.jpg"
                                         }
                                     },
                                     "type": "object"
@@ -612,15 +1738,542 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "Unauthorized - User belum login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User tidak terautentikasi."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Email not verified"
+                        "description": "Email belum diverifikasi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email not verified. Please verify your email first."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Role tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Role tidak valid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
                     {
                         "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/review/{id_reviewed}": {
+            "get": {
+                "tags": [
+                    "RatingReview"
+                ],
+                "summary": "Lihat semua rating yang diterima user tertentu",
+                "operationId": "e2a1137eb297d3fb568a40d4dab2f40c",
+                "parameters": [
+                    {
+                        "name": "id_reviewed",
+                        "in": "path",
+                        "description": "ID user yang ingin dilihat ratingnya",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "USR123"
+                        }
+                    },
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "Filter rating (opsional, 1-5)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data rating",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Berhasil mengambil data rating."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "reviewer_nama": {
+                                                        "type": "string",
+                                                        "example": "Andi Budi"
+                                                    },
+                                                    "rating": {
+                                                        "type": "integer",
+                                                        "example": 4
+                                                    },
+                                                    "ulasan": {
+                                                        "type": "string",
+                                                        "example": "Sangat baik"
+                                                    },
+                                                    "tanggal_rating": {
+                                                        "type": "string",
+                                                        "example": "2025-06-23 10:12"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "example": "worker"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Belum login"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    },
+                    "404": {
+                        "description": "User tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "RatingReview"
+                ],
+                "summary": "Beri atau update rating",
+                "operationId": "e10f72e934f69a682e5ecc872bd85471",
+                "parameters": [
+                    {
+                        "name": "id_reviewed",
+                        "in": "path",
+                        "description": "ID user yang diberi rating",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "USR123"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "rating"
+                                ],
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1,
+                                        "example": 5
+                                    },
+                                    "ulasan": {
+                                        "type": "string",
+                                        "example": "Kerja bagus dan profesional."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menyimpan rating",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rating dan/atau ulasan berhasil disimpan."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Tidak bisa memberi rating ke diri sendiri atau sesama role"
+                    },
+                    "401": {
+                        "description": "Belum terautentikasi"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    },
+                    "404": {
+                        "description": "User tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "RatingReview"
+                ],
+                "summary": "Update rating jika sudah ada",
+                "operationId": "b52544768ef1e0872ee45345993e98e0",
+                "parameters": [
+                    {
+                        "name": "id_reviewed",
+                        "in": "path",
+                        "description": "ID user yang diberi rating",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "USR123"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "rating"
+                                ],
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1,
+                                        "example": 3
+                                    },
+                                    "ulasan": {
+                                        "type": "string",
+                                        "example": "Cukup membantu, perlu ditingkatkan."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rating berhasil diperbarui"
+                    },
+                    "400": {
+                        "description": "Tidak valid memberi rating"
+                    },
+                    "401": {
+                        "description": "Tidak terautentikasi"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    },
+                    "404": {
+                        "description": "User tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/review": {
+            "get": {
+                "tags": [
+                    "RatingReview"
+                ],
+                "summary": "Lihat semua rating yang saya terima",
+                "operationId": "33c9b89c79f9daa88b926c24bd2e6179",
+                "parameters": [
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "Filter berdasarkan rating (1-5)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data rating saya",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Berhasil mengambil data rating Anda."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "reviewer_nama": {
+                                                        "type": "string",
+                                                        "example": "Dewi Kartika"
+                                                    },
+                                                    "rating": {
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "ulasan": {
+                                                        "type": "string",
+                                                        "example": "Top performer"
+                                                    },
+                                                    "tanggal_rating": {
+                                                        "type": "string",
+                                                        "example": "2025-06-23 09:01"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "example": "recruiter"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Belum login"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/searchworker": {
+            "get": {
+                "tags": [
+                    "Recruiter"
+                ],
+                "summary": "Cari worker berdasarkan keyword",
+                "operationId": "124327e177c01e8ec7071251343f9262",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Kata kunci minimal 3 karakter untuk mencari worker berdasarkan fullname, bio, skill, atau lokasi",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "las listrik"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Worker ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Worker ditemukan"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id_worker": {
+                                                        "type": "string",
+                                                        "example": "WKR123"
+                                                    },
+                                                    "id_user": {
+                                                        "type": "string",
+                                                        "example": "USR123"
+                                                    },
+                                                    "fullname": {
+                                                        "type": "string",
+                                                        "example": "Andi Tukang"
+                                                    },
+                                                    "bio": {
+                                                        "type": "string",
+                                                        "example": "Berpengalaman 5 tahun di bidang AC"
+                                                    },
+                                                    "skill": {
+                                                        "type": "string",
+                                                        "example": "AC, listrik, las"
+                                                    },
+                                                    "location": {
+                                                        "type": "string",
+                                                        "example": "Makassar"
+                                                    },
+                                                    "expected_salary": {
+                                                        "type": "integer",
+                                                        "example": 3000000
+                                                    },
+                                                    "availability": {
+                                                        "type": "string",
+                                                        "example": "full-time"
+                                                    },
+                                                    "profile_picture": {
+                                                        "type": "string",
+                                                        "example": "http://localhost/storage/profile.jpg"
+                                                    },
+                                                    "rating": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 4.75
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Keyword tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Keyword pencarian harus minimal 3 karakter"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Belum login"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    },
+                    "500": {
+                        "description": "Terjadi kesalahan server"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -632,16 +2285,48 @@
             "description": "Auth"
         },
         {
+            "name": "Chat",
+            "description": "Chat"
+        },
+        {
+            "name": "Contract",
+            "description": "Contract"
+        },
+        {
+            "name": "Payment",
+            "description": "Payment"
+        },
+        {
             "name": "Dashboard",
             "description": "Dashboard"
+        },
+        {
+            "name": "Instant Match",
+            "description": "Instant Match"
+        },
+        {
+            "name": "Job Offer",
+            "description": "Job Offer"
+        },
+        {
+            "name": "Matchmaking",
+            "description": "Matchmaking"
         },
         {
             "name": "ProfileWoRec",
             "description": "ProfileWoRec"
         },
         {
-            "name": "Profile",
-            "description": "Profile"
+            "name": "Profile Worker Recruiter",
+            "description": "Profile Worker Recruiter"
+        },
+        {
+            "name": "RatingReview",
+            "description": "RatingReview"
+        },
+        {
+            "name": "Recruiter",
+            "description": "Recruiter"
         }
     ]
 }

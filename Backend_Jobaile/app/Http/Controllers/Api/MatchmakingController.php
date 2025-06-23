@@ -21,6 +21,26 @@ class MatchmakingController extends Controller
         }
     }
 
+    /**
+ * @OA\Post(
+ *     path="/api/accbyworker/{id}",
+ *     summary="Worker menerima job offer",
+ *     tags={"Matchmaking"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID job offer yang ingin diterima",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(response=200, description="Job offer diterima, menunggu konfirmasi recruiter"),
+ *     @OA\Response(response=401, description="Belum login / email belum diverifikasi"),
+ *     @OA\Response(response=403, description="Hanya worker yang dapat menerima job"),
+ *     @OA\Response(response=404, description="Job offer tidak valid atau sudah ditutup")
+ * )
+ */
+
     public function Jobofferaccbyworker($id)
     {
         try {
@@ -76,6 +96,33 @@ class MatchmakingController extends Controller
             ]);
         }
     }
+
+    /**
+ * @OA\Post(
+ *     path="/api/matchaccbyrecruiterorrequestbyrecruiter/{id_job}",
+ *     summary="Recruiter mengirimkan tawaran ke worker",
+ *     tags={"Matchmaking"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id_job",
+ *         in="path",
+ *         description="ID dari job offer yang ingin ditawarkan",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"id_worker"},
+ *             @OA\Property(property="id_worker", type="integer", example=12)
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Tawaran berhasil dikirim ke worker"),
+ *     @OA\Response(response=401, description="Unauthorized atau email belum diverifikasi"),
+ *     @OA\Response(response=403, description="Bukan recruiter"),
+ *     @OA\Response(response=404, description="Job offer tidak ditemukan atau bukan milik recruiter")
+ * )
+ */
 
     public function Matchmakingaccbyrecruiter(Request $request, $id_job)
     {
@@ -143,6 +190,25 @@ class MatchmakingController extends Controller
             ]);
         }
     }
+
+    /**
+ * @OA\Post(
+ *     path="/api/match/tolak/{id_job}",
+ *     summary="Tolak tawaran/match oleh worker atau recruiter",
+ *     tags={"Matchmaking"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id_job",
+ *         in="path",
+ *         description="ID job offer yang ingin ditolak",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(response=200, description="Match berhasil ditolak dan dihapus"),
+ *     @OA\Response(response=401, description="Belum login atau email belum diverifikasi"),
+ *     @OA\Response(response=404, description="Match tidak ditemukan")
+ * )
+ */
 
     public function TolakMatch(Request $request, $id_job)
     {

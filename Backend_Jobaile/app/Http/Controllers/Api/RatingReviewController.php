@@ -10,6 +10,72 @@ use Illuminate\Support\Facades\Validator;
 
 class RatingReviewController extends Controller
 {
+    /**
+ * @OA\Post(
+ *     path="/api/review/{id_reviewed}",
+ *     summary="Beri atau update rating",
+ *     tags={"RatingReview"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id_reviewed",
+ *         in="path",
+ *         description="ID user yang diberi rating",
+ *         required=true,
+ *         @OA\Schema(type="string", example="USR123")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"rating"},
+ *             @OA\Property(property="rating", type="integer", minimum=1, maximum=5, example=5),
+ *             @OA\Property(property="ulasan", type="string", example="Kerja bagus dan profesional.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Berhasil menyimpan rating",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Rating dan/atau ulasan berhasil disimpan."),
+ *             @OA\Property(property="data", type="object")
+ *         )
+ *     ),
+ *     @OA\Response(response=400, description="Tidak bisa memberi rating ke diri sendiri atau sesama role"),
+ *     @OA\Response(response=401, description="Belum terautentikasi"),
+ *     @OA\Response(response=403, description="Email belum diverifikasi"),
+ *     @OA\Response(response=404, description="User tidak ditemukan"),
+ *     @OA\Response(response=422, description="Validasi gagal"),
+ * )
+ *
+ * @OA\Patch(
+ *     path="/api/review/{id_reviewed}",
+ *     summary="Update rating jika sudah ada",
+ *     tags={"RatingReview"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id_reviewed",
+ *         in="path",
+ *         description="ID user yang diberi rating",
+ *         required=true,
+ *         @OA\Schema(type="string", example="USR123")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"rating"},
+ *             @OA\Property(property="rating", type="integer", minimum=1, maximum=5, example=3),
+ *             @OA\Property(property="ulasan", type="string", example="Cukup membantu, perlu ditingkatkan.")
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Rating berhasil diperbarui"),
+ *     @OA\Response(response=400, description="Tidak valid memberi rating"),
+ *     @OA\Response(response=401, description="Tidak terautentikasi"),
+ *     @OA\Response(response=403, description="Email belum diverifikasi"),
+ *     @OA\Response(response=404, description="User tidak ditemukan"),
+ *     @OA\Response(response=422, description="Validasi gagal"),
+ * )
+ */
+
     public function kasihrating(Request $request, $id_reviewed)
     {
         $user = auth()->user();
@@ -86,6 +152,46 @@ class RatingReviewController extends Controller
         ]);
     }
 
+    /**
+ * @OA\Get(
+ *     path="/api/review/{id_reviewed}",
+ *     summary="Lihat semua rating yang diterima user tertentu",
+ *     tags={"RatingReview"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id_reviewed",
+ *         in="path",
+ *         description="ID user yang ingin dilihat ratingnya",
+ *         required=true,
+ *         @OA\Schema(type="string", example="USR123")
+ *     ),
+ *     @OA\Parameter(
+ *         name="rating",
+ *         in="query",
+ *         description="Filter rating (opsional, 1-5)",
+ *         required=false,
+ *         @OA\Schema(type="integer", enum={1,2,3,4,5})
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Berhasil mengambil data rating",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Berhasil mengambil data rating."),
+ *             @OA\Property(property="data", type="array", @OA\Items(
+ *                 @OA\Property(property="reviewer_nama", type="string", example="Andi Budi"),
+ *                 @OA\Property(property="rating", type="integer", example=4),
+ *                 @OA\Property(property="ulasan", type="string", example="Sangat baik"),
+ *                 @OA\Property(property="tanggal_rating", type="string", example="2025-06-23 10:12"),
+ *                 @OA\Property(property="role", type="string", example="worker")
+ *             ))
+ *         )
+ *     ),
+ *     @OA\Response(response=401, description="Belum login"),
+ *     @OA\Response(response=403, description="Email belum diverifikasi"),
+ *     @OA\Response(response=404, description="User tidak ditemukan"),
+ * )
+ */
 
     public function lihatrating(Request $request, $id_reviewed)
     {
@@ -148,6 +254,39 @@ class RatingReviewController extends Controller
             })
         ]);
     }
+
+    /**
+ * @OA\Get(
+ *     path="/api/review",
+ *     summary="Lihat semua rating yang saya terima",
+ *     tags={"RatingReview"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="rating",
+ *         in="query",
+ *         description="Filter berdasarkan rating (1-5)",
+ *         required=false,
+ *         @OA\Schema(type="integer", enum={1,2,3,4,5})
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Berhasil mengambil data rating saya",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Berhasil mengambil data rating Anda."),
+ *             @OA\Property(property="data", type="array", @OA\Items(
+ *                 @OA\Property(property="reviewer_nama", type="string", example="Dewi Kartika"),
+ *                 @OA\Property(property="rating", type="integer", example=5),
+ *                 @OA\Property(property="ulasan", type="string", example="Top performer"),
+ *                 @OA\Property(property="tanggal_rating", type="string", example="2025-06-23 09:01"),
+ *                 @OA\Property(property="role", type="string", example="recruiter")
+ *             ))
+ *         )
+ *     ),
+ *     @OA\Response(response=401, description="Belum login"),
+ *     @OA\Response(response=403, description="Email belum diverifikasi"),
+ * )
+ */
 
     public function lihatratingSaya(Request $request)
     {

@@ -17,6 +17,29 @@ use Illuminate\Support\Facades\PasswordReset;
 
 class Job_OfferController extends Controller
 {
+    /**
+ * @OA\Post(
+ *     path="/api/job_offer",
+ *     summary="Recruiter membuat job offer baru",
+ *     tags={"Job Offer"},
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"job_title", "desc"},
+ *             @OA\Property(property="job_title", type="string", example="Asisten Rumah Tangga"),
+ *             @OA\Property(property="desc", type="string", example="Bersih-bersih dan masak setiap hari."),
+ *             @OA\Property(property="status", type="string", enum={"open", "closed"}, example="open")
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Job offer berhasil dibuat"),
+ *     @OA\Response(response=401, description="Unauthorized / belum login"),
+ *     @OA\Response(response=403, description="Email belum diverifikasi / bukan recruiter"),
+ *     @OA\Response(response=422, description="Validasi gagal"),
+ *     @OA\Response(response=500, description="Kesalahan server")
+ * )
+ */
+
     public function PostJob_Offer(Request $request) {
         try {
             $user = auth()->user();
@@ -87,6 +110,34 @@ class Job_OfferController extends Controller
             ]);
         }
     }
+
+    /**
+ * @OA\Put(
+ *     path="/api/job_offer/{id}",
+ *     summary="Recruiter memperbarui job offer miliknya",
+ *     tags={"Job Offer"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="ID job offer yang ingin diupdate",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             @OA\Property(property="job_title", type="string", example="ART Harian"),
+ *             @OA\Property(property="desc", type="string", example="3x seminggu, bantu cuci dan setrika"),
+ *             @OA\Property(property="status", type="string", enum={"open", "closed"}, example="closed")
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Job offer berhasil diperbarui"),
+ *     @OA\Response(response=401, description="Belum login"),
+ *     @OA\Response(response=403, description="Bukan recruiter / belum verifikasi email"),
+ *     @OA\Response(response=404, description="Job offer tidak ditemukan"),
+ *     @OA\Response(response=422, description="Validasi gagal")
+ * )
+ */
 
     public function PutJob_Offer(Request $request, $id)
     {
@@ -164,6 +215,26 @@ class Job_OfferController extends Controller
             ], 500);
         }
     }
+
+    /**
+ * @OA\Get(
+ *     path="/api/dashboardofferrecruiter/{id}",
+ *     summary="Worker melihat detail job offer dari recruiter",
+ *     tags={"Job Offer"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="ID dari job offer",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(response=200, description="Detail job offer ditemukan"),
+ *     @OA\Response(response=401, description="Unauthorized"),
+ *     @OA\Response(response=403, description="Email belum diverifikasi / bukan worker"),
+ *     @OA\Response(response=404, description="Job offer tidak ditemukan")
+ * )
+ */
 
     public function DetailOffer($id) {
         try {

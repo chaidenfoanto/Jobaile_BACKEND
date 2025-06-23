@@ -13,6 +13,56 @@ use Illuminate\Support\Carbon;
 
 class ContractController extends Controller
 {
+        /**
+     * @OA\Post(
+     *     path="/api/contracts/{id}",
+     *     summary="Recruiter membuat kontrak kerja dengan worker",
+     *     tags={"Contract"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID dari worker yang akan dikontrak",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"id_job", "start_date", "end_date", "terms"},
+     *             @OA\Property(property="id_job", type="string", example="job123"),
+     *             @OA\Property(property="start_date", type="string", format="date", example="2025-07-01"),
+     *             @OA\Property(property="end_date", type="string", format="date", example="2025-07-10"),
+     *             @OA\Property(property="terms", type="string", example="Kontrak berlaku 10 hari dan dapat diperpanjang.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Kontrak berhasil dibuat",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Kontrak berhasil dibuat."),
+     *             @OA\Property(
+     *                 property="kontrak",
+     *                 type="object",
+     *                 @OA\Property(property="id_worker", type="string", example="worker123"),
+     *                 @OA\Property(property="id_recruiter", type="string", example="recruiter123"),
+     *                 @OA\Property(property="id_job", type="string", example="job123"),
+     *                 @OA\Property(property="start_date", type="string", example="2025-07-01"),
+     *                 @OA\Property(property="end_date", type="string", example="2025-07-10"),
+     *                 @OA\Property(property="status_pay", type="string", example="pending"),
+     *                 @OA\Property(property="terms", type="string", example="Detail syarat dan ketentuan"),
+     *                 @OA\Property(property="sign_at", type="string", format="date-time", example="2025-06-23T12:00:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="User belum terautentikasi"),
+     *     @OA\Response(response=403, description="Email belum diverifikasi atau bukan recruiter"),
+     *     @OA\Response(response=404, description="Profil recruiter tidak ditemukan"),
+     *     @OA\Response(response=422, description="Validasi gagal (format atau data tidak sesuai)"),
+     *     @OA\Response(response=500, description="Kesalahan server")
+     * )
+     */
     public function ContractController(Request $request, $id) {
         try {
             $user = auth()->user();

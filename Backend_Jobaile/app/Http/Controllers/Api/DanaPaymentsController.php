@@ -14,6 +14,42 @@ class DanaPaymentsController extends Controller
     /**
      * Generate QR Payment untuk kontrak tertentu.
      */
+    /**
+     `* @OA\Post(
+    *     path="/api/payments/qr/{contractId}",
+    *     summary="Generate QR Payment untuk kontrak",
+    *     tags={"Payment"},
+    *     security={{"sanctum":{}}},
+    *     @OA\Parameter(
+    *         name="contractId",
+    *         in="path",
+    *         required=true,
+    *         description="ID dari kontrak",
+    *         @OA\Schema(type="integer", example=1)
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="QR code berhasil dibuat",
+    *         @OA\JsonContent(
+    *             @OA\Property(property="status", type="boolean", example=true),
+    *             @OA\Property(property="message", type="string", example="QR code berhasil dibuat."),
+    *             @OA\Property(
+    *                 property="data",
+    *                 type="object",
+    *                 @OA\Property(property="qr_code_url", type="string", example="https://dummy.dana.qr/scan/JOB-uuid123"),
+    *                 @OA\Property(property="payment_id", type="integer", example=101),
+    *                 @OA\Property(property="merchant_trans_id", type="string", example="JOB-uuid123"),
+    *                 @OA\Property(property="status", type="string", example="waiting_for_payment")
+    *             )
+    *         )
+    *     ),
+    *     @OA\Response(response=401, description="User belum terautentikasi"),
+    *     @OA\Response(response=403, description="Email belum diverifikasi atau bukan recruiter"),
+    *     @OA\Response(response=404, description="Kontrak tidak ditemukan"),
+    *     @OA\Response(response=400, description="Kontrak sudah dibayar"),
+    *     @OA\Response(response=500, description="Kesalahan server")
+    * )
+    */
     public function createQrPayment($contractId)
     {
         $user = auth()->user();
@@ -87,6 +123,24 @@ class DanaPaymentsController extends Controller
     /**
      * Callback dari DANA ketika status pembayaran berubah.
      */
+    /**
+ * @OA\Post(
+ *     path="/api/payments/callback",
+ *     summary="Callback DANA untuk update status pembayaran",
+ *     tags={"Payment"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"merchantTransId", "status"},
+ *             @OA\Property(property="merchantTransId", type="string", example="JOB-uuid123"),
+ *             @OA\Property(property="status", type="string", example="success", enum={"success", "failed", "pending"})
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Status pembayaran diperbarui"),
+ *     @OA\Response(response=404, description="Pembayaran tidak ditemukan"),
+ *     @OA\Response(response=422, description="Validasi gagal")
+ * )
+ */
     public function handleCallback(Request $request)
     {
         // Ambil data JSON dari body

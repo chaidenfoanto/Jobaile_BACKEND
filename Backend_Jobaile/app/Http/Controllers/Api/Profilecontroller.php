@@ -16,37 +16,52 @@ use App\Models\RecruiterModel;
 class Profilecontroller extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/profile",
-     *     summary="Get authenticated user profile",
-     *     tags={"Profile Worker Recruiter"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Successful response",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="tukang found successfully"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id_user", type="integer", example=1),
-     *                 @OA\Property(property="fullname", type="string", example="John Doe"),
-     *                 @OA\Property(property="email", type="string", example="johndoe@example.com"),
-     *                 @OA\Property(property="phone", type="string", example="08123456789"),
-     *                 @OA\Property(property="gender", type="string", example="male"),
-     *                 @OA\Property(property="birthdate", type="string", format="date", example="2000-01-01"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized"
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Email not verified"
-     *     )
-     * )
-     */
+ * @OA\Get(
+ *     path="/api/profile",
+ *     summary="Ambil profil user yang sedang login (worker atau recruiter)",
+ *     tags={"Profile Worker Recruiter"},
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Profil ditemukan",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Worker profile ditemukan."),
+ *             @OA\Property(property="id_user", type="string", example="u5Xd33W..."),
+ *             @OA\Property(property="fullname", type="string", example="John Doe"),
+ *             @OA\Property(property="email", type="string", example="john@example.com"),
+ *             @OA\Property(property="phone", type="string", example="081234567890"),
+ *             @OA\Property(property="gender", type="string", example="male"),
+ *             @OA\Property(property="birthdate", type="string", format="date", example="1990-01-01"),
+ *             @OA\Property(property="photo", type="string", format="url", example="https://yourapp.com/storage/profile/image.jpg")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized - User belum login",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="string", example="User tidak terautentikasi.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Email belum diverifikasi",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Email not verified. Please verify your email first.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Role tidak valid",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Role tidak valid.")
+ *         )
+ *     )
+ * )
+ */
 
      public function getProfile()
      {

@@ -1,6 +1,6 @@
 # Jobaile_BACKEND
 
-[![Contributors][contributors-shield]](https://github.com/FranklinJaya2006/Project-RPSLO/graphs/contributors)
+[![Contributors][contributors-shield]](https://github.com/FranklinJaya2006/Project-RPSLO/graphs/contributors](https://github.com/chaidenfoanto/Jobaile_BACKEND/graphs/contributors)
 
 [contributors-shield]: https://img.shields.io/github/contributors/FranklinJaya2006/Project-RPSLO.svg?style=for-the-badge
 

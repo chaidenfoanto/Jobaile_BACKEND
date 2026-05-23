@@ -201,23 +201,21 @@ This project consists of two separate repositories:
 
 Repository Links:
 - Frontend: 
-- Backend: 
+- Backend: https://github.com/chaidenfoanto/Jobaile_BACKEND
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@franklinjaya_](https://www.instagram.com/franklinjaya_/) - franklinjaya827@gmail.com
+Franklin Jaya - [@franklinjaya_](https://www.instagram.com/franklinjaya_/) - franklinjaya827@gmail.com
 
-Project Link: [https://github.com/FranklinJaya2006/Project-RPSLO/tree/main](https://github.com/FranklinJaya2006/Project-RPSLO/tree/main)
+Project Link: [https://github.com/chaidenfoanto/Jobaile_BACKEND)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[Python.org]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
-[Python-url]: https://www.python.org/
 [Laravel.com]: https://img.shields.io/badge/Laravel-%23FF2D20.svg?logo=laravel&logoColor=white
 [Laravel-url]: [https://ultralytics.com/](https://laravel.com)

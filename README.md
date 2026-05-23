@@ -23,6 +23,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#project-dependencies">Project Dependencies</a></li>
       </ul>
     </li>
     <li>
@@ -32,12 +33,15 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+    </li>
+    <li>
+      <a href="#development-team">Development Team</a>
+    </li>
+    <li>
+      <a href="#contact">Contact</a>
+    </li>
   </ol>
 </details>
 
@@ -213,6 +217,14 @@ Franklin Jaya - [@franklinjaya_](https://www.instagram.com/franklinjaya_/) - fra
 Project Link: [https://github.com/chaidenfoanto/Jobaile_BACKEND)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Development Team
+
+Proyek ini dikembangkan oleh tim **Jobaile Development Team**, yang terdiri dari:
+
+1. **Chaiden Richardo Foanto**  
+2. **Franklin Jaya** 
+3. **Felicia Wijaya** 
 
 
 <!-- MARKDOWN LINKS & IMAGES -->

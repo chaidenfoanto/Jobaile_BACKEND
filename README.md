@@ -2,9 +2,10 @@
 
 [![Contributors][contributors-shield]](https://github.com/chaidenfoanto/Jobaile_BACKEND/graphs/contributors)
 
-[contributors-shield]: https://img.shields.io/github/contributors/FranklinJaya2006/Project-RPSLO.svg?style=for-the-badge]
+[contributors-shield]: https://img.shields.io/github/contributors/chaidenfoanto/Jobaile_BACKEND.svg?style=for-the-badge]
 
-[![LinkedIn][linkedin-shield]](https://www.linkedin.com/in/franklin-jaya-6a3697364/)
+[![LinkedIn Franklin Jaya][linkedin-shield]](https://www.linkedin.com/in/franklin-jaya-6a3697364/)
+[![LinkedIn Chaiden][linkedin-shield]](https://www.linkedin.com/in/chaidenfoanto/?locale=en)
 
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white
 

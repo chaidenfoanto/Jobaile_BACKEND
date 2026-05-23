@@ -200,7 +200,7 @@ This project consists of two separate repositories:
 - Backend (Laravel API)
 
 Repository Links:
-- Frontend: 
+- Frontend: https://github.com/chaidenfoanto/Jobaile_FRONTEND_Recruiter
 - Backend: https://github.com/chaidenfoanto/Jobaile_BACKEND
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

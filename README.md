@@ -1,8 +1,8 @@
 # Jobaile_BACKEND
 
-[![Contributors][contributors-shield]](https://github.com/FranklinJaya2006/Project-RPSLO/graphs/contributors](https://github.com/chaidenfoanto/Jobaile_BACKEND/graphs/contributors)
+[![Contributors][contributors-shield]](https://github.com/chaidenfoanto/Jobaile_BACKEND/graphs/contributors)
 
-[contributors-shield]: https://img.shields.io/github/contributors/FranklinJaya2006/Project-RPSLO.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/FranklinJaya2006/Project-RPSLO.svg?style=for-the-badge]
 
 [![LinkedIn][linkedin-shield]](https://www.linkedin.com/in/franklin-jaya-6a3697364/)
 

@@ -67,7 +67,7 @@ Use the `BLANK_README.md` to get started.
 
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
-* [![Laravel[Laravel.com]][Laravel-url]
+* [![Laravel][Laravel.com]][Laravel-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -77,12 +77,24 @@ This project uses:
 
 - Laravel Composer
 - Laravel Sanctum
+- Swagger
+- Laraavel Reverb
+- Laravel Tinker
 
 Example imports used in the project:
 
 ```laravel
-composer require laravel/sanctum
-php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+"require": {
+        "php": "^8.2",
+        "darkaonline/l5-swagger": "^9.0",
+        "laravel/framework": "^11.31",
+        "laravel/reverb": "^1.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.9",
+        "otnansirk/laravel-dana": "^2.3",
+        "thiagoprz/eloquent-composite-key": "^1.0",
+        "zircote/swagger-php": "^5.1"
+    },
 ```
 
 ## Getting Started

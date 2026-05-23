@@ -218,4 +218,4 @@ Project Link: [https://github.com/chaidenfoanto/Jobaile_BACKEND)
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [Laravel.com]: https://img.shields.io/badge/Laravel-%23FF2D20.svg?logo=laravel&logoColor=white
-[Laravel-url]: [https://ultralytics.com/](https://laravel.com)
+[Laravel-url]: https://laravel.com

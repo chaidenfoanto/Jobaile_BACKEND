@@ -194,9 +194,14 @@ http://127.0.0.1:8000
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+This project consists of two separate repositories:
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+- Frontend (Flutter)
+- Backend (Laravel API)
+
+Repository Links:
+- Frontend: 
+- Backend: 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

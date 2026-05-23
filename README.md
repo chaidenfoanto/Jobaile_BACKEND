@@ -67,8 +67,7 @@ Use the `BLANK_README.md` to get started.
 
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
-* [![YOLO][YOLO.org]][YOLO-url]
-* [![Python][Python.org]][Python-url]
+* [![Laravel[Laravel.com]][Laravel-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -76,16 +75,14 @@ This section should list any major frameworks/libraries used to bootstrap your p
 
 This project uses:
 
-- YOLOv8 for object detection
-- OpenCV for camera processing
-- RPi.GPIO for Raspberry Pi GPIO control
+- Laravel Composer
+- Laravel Sanctum
 
 Example imports used in the project:
 
-```python
-import cv2
-import RPi.GPIO as GPIO
-from ultralytics import YOLO
+```laravel
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
 ```
 
 ## Getting Started
@@ -209,5 +206,5 @@ Project Link: [https://github.com/FranklinJaya2006/Project-RPSLO/tree/main](http
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [Python.org]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
 [Python-url]: https://www.python.org/
-[YOLO.org]: https://img.shields.io/badge/YOLO-Ultralytics-111111?style=for-the-badge
-[YOLO-url]: https://ultralytics.com/
+[Laravel.com]: https://img.shields.io/badge/Laravel-%23FF2D20.svg?logo=laravel&logoColor=white
+[Laravel-url]: [https://ultralytics.com/](https://laravel.com)

@@ -65,7 +65,7 @@ Use the `BLANK_README.md` to get started.
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+This backend project was built with php followingg technologies:
 
 * [![Laravel][Laravel.com]][Laravel-url]
 
@@ -99,21 +99,22 @@ Example imports used in the project:
 
 ## Getting Started
 
-Follow these steps to set up the YOLOv8 project locally using Python virtual environment (`venv`).
+Follow these steps to set up the laravel project locally
 
 ### Prerequisites
 
-Make sure you have installed:
+Make sure you have installed the following software:
 
-- Python 3.10+
-- pip
+- PHP 8.2+
+- Composer
 - Git
+- MySQL 
 
 Check your installation:
 
 ```sh
-python --version
-pip --version
+php --version
+composer --version
 git --version
 ```
 
@@ -133,67 +134,62 @@ git clone https://github.com/your_username/your_repository.git
 cd your_repository
 ```
 
-3. Create a virtual environment
+3. Install project dependencies
 
 ```sh
-python -m venv venv
+composer install
 ```
 
-4. Activate the virtual environment
-
-**Windows**
-```sh
-venv\Scripts\activate
-```
-
-**Linux / macOS / Raspberry Pi**
-```sh
-source venv/bin/activate
-```
-
-5. Install required dependencies
+4. Copy the environment configuration file
 
 ```sh
-pip install ultralytics opencv-python
+cp .env.example .env
 ```
 
-For Raspberry Pi GPIO support:
+**Windows (PowerShell)**
+
+```powershell
+copy .env.example .env
+```
+
+5. Generate the Laravel application key
 
 ```sh
-pip install RPi.GPIO
+php artisan key:generate
 ```
 
-6. Download YOLOv8 model weights
+6. Configure your database in the `.env` file
 
 Example:
 
-```sh
-wget https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8s.pt
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=root
+DB_PASSWORD=
 ```
 
-Or manually download the model from:
-
-- https://github.com/ultralytics/ultralytics
-
-7. Run the project
+7. Run database migrations
 
 ```sh
-python roda.py
+php artisan migrate
+```
+
+8. Start the Laravel development server
+
+```sh
+php artisan serve
+```
+
+The backend server will run at:
+
+```txt
+http://127.0.0.1:8000
 ```
 
 ---
-
-### Verify YOLOv8 Installation
-
-```sh
-yolo version
-```
-
-If installed correctly, the YOLOv8 version information will appear.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage

@@ -248,7 +248,7 @@ Franklin Jaya - [@franklinjaya_](https://www.instagram.com/franklinjaya_/) - fra
 
 ## Development Team
 
-Proyek ini dikembangkan oleh tim **Jobaile Development Team**, yang terdiri dari:
+This Project are developed by **Jobaile Development Team**, which consist of three people:
 
 1. **Chaiden Richardo Foanto**  
 2. **Franklin Jaya** 

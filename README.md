@@ -234,7 +234,6 @@ This project consists of two separate repositories:
 
 Repository Links:
 - Frontend Recruiter: https://github.com/chaidenfoanto/Jobaile_FRONTEND_Recruiter
-- Frontend Worker: https://github.com/chaidenfoanto/Jobaile_FRONTEND_Worker
 - Backend: https://github.com/chaidenfoanto/Jobaile_BACKEND
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

@@ -242,7 +242,7 @@ Repository Links:
 <!-- CONTACT -->
 ## Contact
 
-[Franklin Jaya - [@franklinjaya_](https://www.instagram.com/franklinjaya_/) - franklinjaya827@gmail.com - [Franklin_Github](https://github.com/FranklinJaya2006)
+Franklin Jaya - [@franklinjaya_](https://www.instagram.com/franklinjaya_/) - franklinjaya827@gmail.com - [Franklin_Github](https://github.com/FranklinJaya2006)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

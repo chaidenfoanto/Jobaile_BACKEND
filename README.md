@@ -4,7 +4,7 @@
 
 [contributors-shield]: https://img.shields.io/github/contributors/chaidenfoanto/Jobaile_BACKEND.svg?style=for-the-badge]
 
-[![LinkedIn Franklin Jaya][linkedin-shield]](https://www.linkedin.com/in/franklin-jaya-6a3697364/)
+[![Franklin Jaya][linkedin-shield]](https://www.linkedin.com/in/franklin-jaya-6a3697364/)
 [![LinkedIn Chaiden][linkedin-shield]](https://www.linkedin.com/in/chaidenfoanto/?locale=en)
 
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white

@@ -1,6 +1,6 @@
 # Jobaile_BACKEND
 
-[![Contributors](https://img.shields.io/github/contributors/chaidenfoanto/Jobaile_BACKEND.svg?style=for-the-badge)(https://github.com/chaidenfoanto/Jobaile_BACKEND/graphs/contributors)
+[![Contributors](https://img.shields.io/github/contributors/chaidenfoanto/Jobaile_BACKEND.svg?style=for-the-badge)
 
 [contributors-shield]: https://img.shields.io/github/contributors/chaidenfoanto/Jobaile_BACKEND.svg?style=for-the-badge]
 

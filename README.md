@@ -70,7 +70,9 @@ Use the `BLANK_README.md` to get started.
 
 This backend project was built with php followingg technologies:
 
-<img src="https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" height="35">
+<a href="https://laravel.com">
+  <img src="https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" height="35">
+</a>
 
 ### Project Dependencies
 

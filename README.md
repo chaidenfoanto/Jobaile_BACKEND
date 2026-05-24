@@ -11,6 +11,9 @@
 
 
 <!-- PROJECT LOGO -->
+<p align="center">
+  <img src="jobailelogo.png" width="250">
+</p>
 <br />
 
 

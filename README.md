@@ -53,7 +53,7 @@
 
 Jobaile is a mobile and web-based recruitment platform designed to connect recruiters with domestic workers such as housemaids (ART), caregivers, cleaners, and other household service providers.
 
-The application was developed to help address trust and transparency issues that are still common in domestic worker recruitment processes. Many employers experience difficulties in finding reliable workers, while workers also struggle to access secure and trustworthy job opportunities.
+The application was developed to help address trust issues that are still common in domestic worker recruitment processes. Many employers experience difficulties in finding reliable workers, while workers also struggle to access secure and trustworthy job opportunities.
 
 Jobaile provides a digital platform that simplifies the recruitment process through user verification, worker profiles, communication features, and job matching systems.
 
